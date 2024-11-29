@@ -73,6 +73,36 @@ public class UserController {
         }
         return null;
     }
+    
+    public User getUserByUsername(String username) {
+        Connection connection = db.getConnection();
+        User user = null;
+        String query = "SELECT * FROM users WHERE username = ?";  // Adjust if necessary
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                String retrievedUsername = rs.getString("username");
+                String retrievedPassword = rs.getString("password");  // Hashed password stored in DB
+                String firstName = rs.getString("first_name");
+                String lastName = rs.getString("last_name");
+                String email = rs.getString("email");
+                Timestamp dateCreated = rs.getTimestamp("date_created");
+                Timestamp dateUpdated = rs.getTimestamp("date_updated");
+                String role = rs.getString("role");
+
+                user = new User(id, retrievedUsername, retrievedPassword, firstName, lastName, email, dateCreated, dateUpdated, role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+
 
     // READ: Retrieve all users
     public List<User> getAllUsers() {

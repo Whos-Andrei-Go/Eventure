@@ -11,23 +11,26 @@ import java.sql.SQLException;
 import javax.swing.*;
 import com.formdev.flatlaf.FlatLightLaf;
 import controllers.UserController;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import models.User;
+import org.mindrot.jbcrypt.BCrypt;
 import utility.Database;
 /**
  *
  * @author andre
  */
 public class LoginView extends javax.swing.JFrame {
-
-    Connection dbConnection = null;
     
     /**
      * Creates new form Dashboard
      */
     public LoginView() {
         initComponents();
+        myInitComponents();
     }
 
     /**
@@ -39,8 +42,9 @@ public class LoginView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        hdrLogin = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        lblLogo = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         txtPassword = new javax.swing.JPasswordField();
@@ -51,12 +55,26 @@ public class LoginView extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Login");
 
-        jLabel1.setFont(new java.awt.Font("Riffic Free Medium", 1, 64)); // NOI18N
-        jLabel1.setText("Login");
+        hdrLogin.setFont(new java.awt.Font("Riffic Free Medium", 1, 64)); // NOI18N
+        hdrLogin.setText("Login");
 
         jPanel1.setBackground(new java.awt.Color(155, 0, 155));
         jPanel1.setPreferredSize(new java.awt.Dimension(200, 450));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblLogo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        lblLogo.setPreferredSize(new java.awt.Dimension(550, 135));
+        lblLogo.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                lblLogoComponentResized(evt);
+            }
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                lblLogoComponentShown(evt);
+            }
+        });
+        jPanel1.add(lblLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, -1, -1));
 
         lblUsername.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         lblUsername.setText("Username:");
@@ -114,7 +132,7 @@ public class LoginView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(hdrLogin)
                         .addGap(230, 230, 230))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(64, 64, 64)
@@ -129,13 +147,13 @@ public class LoginView extends javax.swing.JFrame {
                                 .addComponent(txtUsername)
                                 .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 61, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(42, 42, 42)
-                .addComponent(jLabel1)
+                .addComponent(hdrLogin)
                 .addGap(79, 79, 79)
                 .addComponent(lblUsername)
                 .addGap(18, 18, 18)
@@ -148,14 +166,28 @@ public class LoginView extends javax.swing.JFrame {
                 .addComponent(btnLogin)
                 .addGap(18, 18, 18)
                 .addComponent(btnRegister)
-                .addContainerGap(93, Short.MAX_VALUE))
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
         );
 
         setSize(new java.awt.Dimension(1294, 727));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    public void myInitComponents() {
+        lblLogo.setSize(new Dimension(550, 135)); // Set desired width and height
+        lblLogo.revalidate();
+        lblLogo.repaint();
+        
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/storage/images/logo.png"));
+        
+        Image img = logoIcon.getImage();
+        Image imgScale = img.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT);
+        ImageIcon scaledIcon = new ImageIcon(imgScale);
+        
+        lblLogo.setIcon(scaledIcon); // NOI18N
+    }
+    
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsernameActionPerformed
@@ -166,8 +198,8 @@ public class LoginView extends javax.swing.JFrame {
 
     private void btnLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseClicked
         // TODO add your handling code here: 
-        String username = getTxtUsername().getText();
-        String password = getTxtPassword().getText();
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
 
         if (validateLogin(username, password)) {
             // Login successful, proceed to main application
@@ -187,6 +219,15 @@ public class LoginView extends javax.swing.JFrame {
         // TODO add your handling code here:
         openRegisterView();
     }//GEN-LAST:event_btnRegisterMouseClicked
+
+    private void lblLogoComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_lblLogoComponentResized
+      
+    }//GEN-LAST:event_lblLogoComponentResized
+
+    private void lblLogoComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_lblLogoComponentShown
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_lblLogoComponentShown
 
     private void openDashboard() {
         // Dispose of the login view
@@ -210,35 +251,20 @@ public class LoginView extends javax.swing.JFrame {
     private boolean validateLogin(String username, String password) {
         // Create a new Database object to get the connection
         Database db = new Database();
-
-        // Pass the database connection to the UserController
         UserController userController = new UserController(db);
-        // Use UserController to check login credentials
-        User user = userController.loginUser(username, password);
-        // If the user is found and the password matches
+
+        // Fetch the user from the database by username
+        User user = userController.getUserByUsername(username);
+
         if (user != null) {
-            return true; // Login successful
+            // Use bcrypt to compare the entered password with the stored hashed password
+            return BCrypt.checkpw(password, user.getPassword());
         }
 
-        return false; // Invalid login
+        // If user doesn't exist
+        return false;
     }
 
-    
-    public JTextField getTxtUsername() {
-        return txtUsername;
-    }
-
-    public JPasswordField getTxtPassword() {
-        return txtPassword;
-    }
-
-    public JButton getBtnLogin() {
-        return btnLogin;
-    }
-    
-    public JButton getBtnRegister() { // Getter for register button
-        return btnRegister;
-    }
     
     /**
      * @param args the command line arguments
@@ -288,8 +314,9 @@ public class LoginView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnRegister;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel hdrLogin;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JPasswordField txtPassword;
