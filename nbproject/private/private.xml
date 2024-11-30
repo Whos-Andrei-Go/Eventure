@@ -3,11 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/RegisterView.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/controllers/LoginController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/utility/Database.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/OldEventView.java</file>
             <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/LoginView.java</file>
-            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/controllers/RegisterController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/controllers/UserController.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/RegisterView.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/models/User.java</file>
             <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/DashboardView.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/utility/PasswordUtils.java</file>
         </group>
     </open-files>
 </project-private>

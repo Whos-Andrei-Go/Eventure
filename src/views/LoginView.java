@@ -23,7 +23,7 @@ import utility.Database;
  *
  * @author andre
  */
-public class LoginView extends javax.swing.JFrame {
+public class LoginView extends BaseView {
     
     /**
      * Creates new form Dashboard
@@ -54,6 +54,8 @@ public class LoginView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Login");
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        setResizable(false);
 
         hdrLogin.setFont(new java.awt.Font("Riffic Free Medium", 1, 64)); // NOI18N
         hdrLogin.setText("Login");
@@ -295,19 +297,13 @@ public class LoginView extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-            
-            /* Create and display the form */
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new LoginView().setVisible(true);
-                }
-            });
-            
-        } catch (UnsupportedLookAndFeelException ex) {
-            System.err.println("Failed to initialize FlatLaf");
-        }
+        
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new LoginView().setVisible(true);
+            }
+        });
  
     }
 

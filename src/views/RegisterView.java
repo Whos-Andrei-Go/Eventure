@@ -58,6 +58,7 @@ public class RegisterView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Register");
+        setResizable(false);
 
         hdrRegister.setFont(new java.awt.Font("Riffic Free Medium", 1, 64)); // NOI18N
         hdrRegister.setText("Register");
