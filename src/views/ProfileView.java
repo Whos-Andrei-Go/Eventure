@@ -45,7 +45,7 @@ public class ProfileView extends BaseView {
         hdrDashboard1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Dashboard");
+        setTitle("Eventure - Profile");
         setResizable(false);
 
         pnlNavBar.setBackground(new java.awt.Color(155, 0, 155));
@@ -122,9 +122,6 @@ public class ProfileView extends BaseView {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlNavBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
@@ -135,6 +132,7 @@ public class ProfileView extends BaseView {
                             .addComponent(txtDashboardSub1)
                             .addComponent(hdrDashboard1))))
                 .addContainerGap(378, Short.MAX_VALUE))
+            .addComponent(pnlNavBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

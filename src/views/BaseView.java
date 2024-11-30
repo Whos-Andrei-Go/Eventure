@@ -7,6 +7,7 @@ package views;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import utility.Database;
 
 /**
  *
@@ -17,10 +18,13 @@ public class BaseView extends javax.swing.JFrame {
     /**
      * Creates new form BaseView
      */
+    
+    Database db;
+    
     public BaseView() {
         initComponents();
         applyLookAndFeel(); // Apply the FlatLaf theme
-        myInitComponents(); // Initialize components in derived classes
+        addDBConnection(); // Initialize components in derived classes
     }
 
     /**
@@ -59,8 +63,9 @@ public class BaseView extends javax.swing.JFrame {
     }
 
     // You can add some common components that are used across your views, like menus, or apply general settings
-    private void myInitComponents() {
+    public void addDBConnection() {
         // Initialize any components that will be shared across views (optional)
+        db = new Database();
     }
     
     /**

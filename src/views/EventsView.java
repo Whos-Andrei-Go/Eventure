@@ -4,10 +4,14 @@
  */
 package views;
 
+import controllers.EventController;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
-import javax.swing.ImageIcon;
+import java.util.List;
+import javax.swing.*;
+import models.Event;
 import views.*;
 
 /**
@@ -19,9 +23,13 @@ public class EventsView extends BaseView {
     /**
      * Creates new form DashboardView
      */
+    
+    private EventController controller;
+    
     public EventsView() {
         initComponents();
         myInitComponents();
+        loadEventCards();  // Load events and display them as cards
     }
 
     /**
@@ -39,11 +47,14 @@ public class EventsView extends BaseView {
         lblNBEvents = new javax.swing.JLabel();
         lblNBProfile = new javax.swing.JLabel();
         lblNBCheckout = new javax.swing.JLabel();
+        pnlMain = new javax.swing.JPanel();
         hdrDashboard1 = new javax.swing.JLabel();
         btnCreateEvent = new javax.swing.JButton();
+        pneEventCards = new javax.swing.JScrollPane();
+        pnlEventCards = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Dashboard");
+        setTitle("Eventure - Events");
         setResizable(false);
 
         pnlNavBar.setBackground(new java.awt.Color(155, 0, 155));
@@ -83,7 +94,7 @@ public class EventsView extends BaseView {
                 lblNBProfileMouseClicked(evt);
             }
         });
-        pnlNavBar.add(lblNBProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(1130, 35, -1, -1));
+        pnlNavBar.add(lblNBProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 35, -1, -1));
 
         lblNBCheckout.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
         lblNBCheckout.setForeground(new java.awt.Color(255, 255, 255));
@@ -93,10 +104,13 @@ public class EventsView extends BaseView {
                 lblNBCheckoutMouseClicked(evt);
             }
         });
-        pnlNavBar.add(lblNBCheckout, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 35, -1, -1));
+        pnlNavBar.add(lblNBCheckout, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 35, -1, -1));
+
+        pnlMain.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         hdrDashboard1.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
         hdrDashboard1.setText("EVENTS");
+        pnlMain.add(hdrDashboard1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
 
         btnCreateEvent.setBackground(new java.awt.Color(153, 0, 153));
         btnCreateEvent.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -107,33 +121,26 @@ public class EventsView extends BaseView {
                 btnCreateEventActionPerformed(evt);
             }
         });
+        pnlMain.add(btnCreateEvent, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 80, -1, -1));
+
+        pnlEventCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 0, 0));
+        pneEventCards.setViewportView(pnlEventCards);
+
+        pnlMain.add(pneEventCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, 1200, 400));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlNavBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(hdrDashboard1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 743, Short.MAX_VALUE)
-                .addComponent(btnCreateEvent)
-                .addGap(53, 53, 53))
+            .addComponent(pnlNavBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1280, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnlNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(hdrDashboard1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
-                        .addComponent(btnCreateEvent)))
-                .addContainerGap(484, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE))
         );
 
         pack();
@@ -174,7 +181,56 @@ public class EventsView extends BaseView {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCreateEventActionPerformed
 
-    public void myInitComponents() {
+    public void loadEventCards() {
+        List<Event> events = controller.getEvents(); // Fetch events from controller
+
+        pnlEventCards.removeAll(); // Clear existing components
+
+        for (Event event : events) {
+            JPanel eventPanel = new JPanel();
+            eventPanel.setLayout(new BoxLayout(eventPanel, BoxLayout.Y_AXIS));
+            eventPanel.setBackground(new Color(128, 0, 128)); // Purple background
+            eventPanel.setPreferredSize(new Dimension(250, 250));
+
+            // Add labels
+            JLabel lblName = new JLabel(event.getName());
+            lblName.setFont(new Font("Tahoma", Font.BOLD, 24));
+            lblName.setForeground(Color.WHITE);
+
+            JLabel lblDescription = new JLabel(event.getDescription());
+            lblDescription.setFont(new Font("Tahoma", Font.PLAIN, 12));
+            lblDescription.setForeground(Color.WHITE);
+
+            JLabel lblDate = new JLabel(event.getDate());
+            lblDate.setFont(new Font("Tahoma", Font.BOLD, 12));
+            lblDate.setForeground(Color.WHITE);
+
+            // Add components to panel
+            eventPanel.add(lblName);
+            eventPanel.add(lblDescription);
+            eventPanel.add(lblDate);
+
+            // Add margin around event panel
+            eventPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            pnlEventCards.add(eventPanel);
+            pnlEventCards.add(Box.createRigidArea(new Dimension(0, 20))); // Vertical gap
+        }
+
+        pnlEventCards.setPreferredSize(new Dimension(
+            pneEventCards.getViewport().getWidth(),
+            pnlEventCards.getPreferredSize().height + ((events.size() / 4) * 260) // Adjust height based on card count
+        ));
+        
+        pnlEventCards.revalidate();
+        pnlEventCards.repaint();
+    }
+
+
+
+    public void myInitComponents() {  
+        controller = new EventController(db);
+        
         lblLogo.setText("");
         lblLogo.setSize(new Dimension(225, 55)); // Set desired width and height
         lblLogo.revalidate();
@@ -235,6 +291,9 @@ public class EventsView extends BaseView {
     private javax.swing.JLabel lblNBDashboard;
     private javax.swing.JLabel lblNBEvents;
     private javax.swing.JLabel lblNBProfile;
+    private javax.swing.JScrollPane pneEventCards;
+    private javax.swing.JPanel pnlEventCards;
+    private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlNavBar;
     // End of variables declaration//GEN-END:variables
 }

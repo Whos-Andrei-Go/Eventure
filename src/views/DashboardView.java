@@ -14,7 +14,7 @@ import views.*;
  *
  * @author andre
  */
-public class DashboardView extends javax.swing.JFrame {
+public class DashboardView extends BaseView {
 
     /**
      * Creates new form DashboardView
@@ -122,9 +122,6 @@ public class DashboardView extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlNavBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
@@ -135,6 +132,7 @@ public class DashboardView extends javax.swing.JFrame {
                             .addComponent(txtDashboardSub1)
                             .addComponent(hdrDashboard1))))
                 .addContainerGap(378, Short.MAX_VALUE))
+            .addComponent(pnlNavBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,7 +181,7 @@ public class DashboardView extends javax.swing.JFrame {
         this.dispose(); // Close the current window (Dashboard)
     }//GEN-LAST:event_lblNBProfileMouseClicked
 
-    public void myInitComponents() {
+    public void myInitComponents() {        
         lblLogo.setText("");
         lblLogo.setSize(new Dimension(225, 55)); // Set desired width and height
         lblLogo.revalidate();
