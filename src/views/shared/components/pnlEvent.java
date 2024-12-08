@@ -4,6 +4,10 @@
  */
 package views.shared.components;
 
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
 /**
  *
  * @author andre
@@ -13,12 +17,22 @@ public class pnlEvent extends javax.swing.JPanel {
     /**
      * Creates new form pnlEvent
      */
+    private String name;
+    private String description;
+    private String date;
+    
+     private JPanel overlayPanel;
+    
     public pnlEvent() {
         initComponents();
     }
     
     public pnlEvent(String name, String description, String date) {
         initComponents();
+        
+        this.name = name;
+        this.description = description;
+        this.date = date;
         
         this.lblName.setText(name);
         this.lblDescription.setText(description);
@@ -40,6 +54,15 @@ public class pnlEvent extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(128, 0, 128));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setMaximumSize(new java.awt.Dimension(1000, 1000));
+        setMinimumSize(new java.awt.Dimension(100, 100));
+        setPreferredSize(new java.awt.Dimension(250, 250));
+        setRequestFocusEnabled(false);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         lblName.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -58,6 +81,55 @@ public class pnlEvent extends javax.swing.JPanel {
         add(lblDate);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        showEventOverlay(name, description, date);
+    }//GEN-LAST:event_formMouseClicked
+
+    private void showEventOverlay(String name, String description, String date) {
+        /// Access the parent panel of the current pnlEvent
+        JPanel parentPanel = (JPanel) getParent();
+
+        // Remove any existing overlay
+        if (overlayPanel != null) {
+            parentPanel.remove(overlayPanel);
+        }
+
+        // Create a new overlay panel (semi-transparent dark background)
+        overlayPanel = new JPanel();
+        overlayPanel.setBackground(new Color(0, 0, 0, 150)); // semi-transparent black
+        overlayPanel.setLayout(new BorderLayout());
+        overlayPanel.setBounds(0, 0, parentPanel.getWidth(), parentPanel.getHeight()); // Full size of the parent panel
+
+        // Create the event details panel to appear on top
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        detailsPanel.setBackground(Color.WHITE);
+        detailsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        JLabel lblEventName = new JLabel("Event: " + name);
+        lblEventName.setFont(new Font("Tahoma", Font.BOLD, 20));
+        detailsPanel.add(lblEventName);
+
+        JLabel lblEventDesc = new JLabel("Description: " + description);
+        lblEventDesc.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        detailsPanel.add(lblEventDesc);
+
+        JLabel lblEventDate = new JLabel("Date: " + date);
+        lblEventDate.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        detailsPanel.add(lblEventDate);
+
+        // Add the details panel to the overlay
+        overlayPanel.add(detailsPanel, BorderLayout.CENTER);
+
+        // Add the overlay to the parent panel
+        parentPanel.add(overlayPanel, BorderLayout.CENTER);
+
+        // Revalidate and repaint the parent panel to reflect the overlay
+        parentPanel.revalidate();
+        parentPanel.repaint();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblDescription;
