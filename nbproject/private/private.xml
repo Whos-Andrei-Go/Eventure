@@ -4,6 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/BaseView.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/shared/components/pnlNavBar.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/shared/components/pnlEvent.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/EventsView.java</file>
+            <file>file:/C:/Users/andre/OneDrive/Documents/NetBeansProjects/ETS_Go_JSwing/src/views/CheckoutView.java</file>
         </group>
     </open-files>
 </project-private>

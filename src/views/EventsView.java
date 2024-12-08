@@ -5,6 +5,7 @@
 package views;
 
 import controllers.EventController;
+import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.util.List;
 import javax.swing.*;
 import models.Event;
 import views.*;
+import views.shared.components.pnlEvent;
 
 /**
  *
@@ -41,76 +43,27 @@ public class EventsView extends BaseView {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlNavBar = new javax.swing.JPanel();
-        lblLogo = new javax.swing.JLabel();
-        lblNBDashboard = new javax.swing.JLabel();
-        lblNBEvents = new javax.swing.JLabel();
-        lblNBProfile = new javax.swing.JLabel();
-        lblNBCheckout = new javax.swing.JLabel();
+        pnlNavBar1 = new views.shared.components.pnlNavBar();
+        scrlMain = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
-        hdrDashboard1 = new javax.swing.JLabel();
+        hdrMain = new javax.swing.JLabel();
+        pnlCards = new javax.swing.JPanel();
         btnCreateEvent = new javax.swing.JButton();
-        pneEventCards = new javax.swing.JScrollPane();
-        pnlEventCards = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Events");
         setResizable(false);
 
-        pnlNavBar.setBackground(new java.awt.Color(155, 0, 155));
-        pnlNavBar.setMinimumSize(new java.awt.Dimension(75, 23));
-        pnlNavBar.setPreferredSize(new java.awt.Dimension(320, 720));
-        pnlNavBar.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        lblLogo.setText("THE LOGO SHOULD BE HERE");
-        lblLogo.setPreferredSize(new java.awt.Dimension(225, 55));
-        pnlNavBar.add(lblLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 25, -1, -1));
+        hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
+        hdrMain.setText("EVENTS");
+        hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
-        lblNBDashboard.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
-        lblNBDashboard.setForeground(new java.awt.Color(255, 255, 255));
-        lblNBDashboard.setText("Dashboard");
-        lblNBDashboard.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblNBDashboardMouseClicked(evt);
-            }
-        });
-        pnlNavBar.add(lblNBDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 35, -1, -1));
-
-        lblNBEvents.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
-        lblNBEvents.setForeground(new java.awt.Color(255, 255, 255));
-        lblNBEvents.setText("Events");
-        lblNBEvents.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblNBEventsMouseClicked(evt);
-            }
-        });
-        pnlNavBar.add(lblNBEvents, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 35, -1, -1));
-
-        lblNBProfile.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
-        lblNBProfile.setForeground(new java.awt.Color(255, 255, 255));
-        lblNBProfile.setText("Profile");
-        lblNBProfile.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblNBProfileMouseClicked(evt);
-            }
-        });
-        pnlNavBar.add(lblNBProfile, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 35, -1, -1));
-
-        lblNBCheckout.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
-        lblNBCheckout.setForeground(new java.awt.Color(255, 255, 255));
-        lblNBCheckout.setText("Checkout");
-        lblNBCheckout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblNBCheckoutMouseClicked(evt);
-            }
-        });
-        pnlNavBar.add(lblNBCheckout, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 35, -1, -1));
-
-        pnlMain.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        hdrDashboard1.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
-        hdrDashboard1.setText("EVENTS");
-        pnlMain.add(hdrDashboard1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
+        pnlCards.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        pnlCards.setPreferredSize(new java.awt.Dimension(400, 1000));
+        pnlCards.setLayout(new java.awt.GridLayout(0, 3, 20, 20));
 
         btnCreateEvent.setBackground(new java.awt.Color(153, 0, 153));
         btnCreateEvent.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -121,128 +74,88 @@ public class EventsView extends BaseView {
                 btnCreateEventActionPerformed(evt);
             }
         });
-        pnlMain.add(btnCreateEvent, new org.netbeans.lib.awtextra.AbsoluteConstraints(1050, 80, -1, -1));
 
-        pnlEventCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 0, 0));
-        pneEventCards.setViewportView(pnlEventCards);
+        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+        pnlMain.setLayout(pnlMainLayout);
+        pnlMainLayout.setHorizontalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 1203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(hdrMain)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCreateEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
+        );
+        pnlMainLayout.setVerticalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(btnCreateEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20)
+                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
 
-        pnlMain.add(pneEventCards, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, 1200, 400));
+        scrlMain.setViewportView(pnlMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlNavBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1280, Short.MAX_VALUE)
+            .addComponent(pnlNavBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(scrlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlNavBar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlNavBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE))
+                .addComponent(scrlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lblNBEventsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNBEventsMouseClicked
-        // TODO add your handling code here:
-        // Open the Events page when Events label is clicked
-        EventsView view = new EventsView(); // Create a new page for Events
-        view.setVisible(true);
-        this.dispose(); // Close the current window (Dashboard)
-        
-    }//GEN-LAST:event_lblNBEventsMouseClicked
-
-    private void lblNBDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNBDashboardMouseClicked
-        // TODO add your handling code here:
-        DashboardView view = new DashboardView(); // Create a new page for Events
-        view.setVisible(true);
-        this.dispose(); // Close the current window (Dashboard)
-    }//GEN-LAST:event_lblNBDashboardMouseClicked
-
-    private void lblNBCheckoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNBCheckoutMouseClicked
-        // TODO add your handling code here:
-        CheckoutView view = new CheckoutView(); // Create a new page for Events
-        view.setVisible(true);
-        this.dispose(); // Close the current window (Dashboard)
-    }//GEN-LAST:event_lblNBCheckoutMouseClicked
-
-    private void lblNBProfileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNBProfileMouseClicked
-        // TODO add your handling code here:
-        ProfileView view = new ProfileView(); // Create a new page for Events
-        view.setVisible(true);
-        this.dispose(); // Close the current window (Dashboard)
-    }//GEN-LAST:event_lblNBProfileMouseClicked
-
     private void btnCreateEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateEventActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCreateEventActionPerformed
 
     public void loadEventCards() {
-        List<Event> events = controller.getEvents(); // Fetch events from controller
+        List<Event> events = controller.getEvents();
 
-        pnlEventCards.removeAll(); // Clear existing components
-
-        for (Event event : events) {
-            JPanel eventPanel = new JPanel();
-            eventPanel.setLayout(new BoxLayout(eventPanel, BoxLayout.Y_AXIS));
-            eventPanel.setBackground(new Color(128, 0, 128)); // Purple background
-            eventPanel.setPreferredSize(new Dimension(250, 250));
-
-            // Add labels
-            JLabel lblName = new JLabel(event.getName());
-            lblName.setFont(new Font("Tahoma", Font.BOLD, 24));
-            lblName.setForeground(Color.WHITE);
-
-            JLabel lblDescription = new JLabel(event.getDescription());
-            lblDescription.setFont(new Font("Tahoma", Font.PLAIN, 12));
-            lblDescription.setForeground(Color.WHITE);
-
-            JLabel lblDate = new JLabel(event.getDate());
-            lblDate.setFont(new Font("Tahoma", Font.BOLD, 12));
-            lblDate.setForeground(Color.WHITE);
-
-            // Add components to panel
-            eventPanel.add(lblName);
-            eventPanel.add(lblDescription);
-            eventPanel.add(lblDate);
-
-            // Add margin around event panel
-            eventPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            pnlEventCards.add(eventPanel);
-            pnlEventCards.add(Box.createRigidArea(new Dimension(0, 20))); // Vertical gap
+        if (events == null || events.isEmpty()) {
+            System.out.println("No events to display.");
+        } else {
+            System.out.println("Events fetched: " + events.size());
         }
 
-        pnlEventCards.setPreferredSize(new Dimension(
-            pneEventCards.getViewport().getWidth(),
-            pnlEventCards.getPreferredSize().height + ((events.size() / 4) * 260) // Adjust height based on card count
-        ));
-        
-        pnlEventCards.revalidate();
-        pnlEventCards.repaint();
+        pnlCards.removeAll();
+
+        for (Event event : events) {
+            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getDescription(), event.getDate());
+
+            eventPanel.setPreferredSize(new Dimension(250, 250));
+            pnlCards.add(eventPanel);
+        }
+
+        pnlCards.revalidate();
+        pnlCards.repaint();
     }
 
 
 
     public void myInitComponents() {  
         controller = new EventController(db);
-        
-        lblLogo.setText("");
-        lblLogo.setSize(new Dimension(225, 55)); // Set desired width and height
-        lblLogo.revalidate();
-        lblLogo.repaint();
-        
-        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/storage/images/logo.png"));
-        
-        Image img = logoIcon.getImage();
-        Image imgScale = img.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT);
-        ImageIcon scaledIcon = new ImageIcon(imgScale);
-        
-        lblLogo.setIcon(scaledIcon); // NOI18N
     }
     
     /**
@@ -285,15 +198,10 @@ public class EventsView extends BaseView {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateEvent;
-    private javax.swing.JLabel hdrDashboard1;
-    private javax.swing.JLabel lblLogo;
-    private javax.swing.JLabel lblNBCheckout;
-    private javax.swing.JLabel lblNBDashboard;
-    private javax.swing.JLabel lblNBEvents;
-    private javax.swing.JLabel lblNBProfile;
-    private javax.swing.JScrollPane pneEventCards;
-    private javax.swing.JPanel pnlEventCards;
+    private javax.swing.JLabel hdrMain;
+    private javax.swing.JPanel pnlCards;
     private javax.swing.JPanel pnlMain;
-    private javax.swing.JPanel pnlNavBar;
+    private views.shared.components.pnlNavBar pnlNavBar1;
+    private javax.swing.JScrollPane scrlMain;
     // End of variables declaration//GEN-END:variables
 }

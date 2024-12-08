@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package views.shared.components;
+import java.awt.Dimension;
+import java.awt.Image;
 import views.*;
 import javax.swing.*;
 
@@ -17,6 +19,7 @@ public class pnlNavBar extends javax.swing.JPanel {
      */
     public pnlNavBar() {
         initComponents();
+        setupLogo();
     }
 
     /**
@@ -27,6 +30,7 @@ public class pnlNavBar extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         lblLogo = new javax.swing.JLabel();
         lblNBDashboard = new javax.swing.JLabel();
@@ -35,12 +39,20 @@ public class pnlNavBar extends javax.swing.JPanel {
         lblNBProfile = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(155, 0, 155));
-        setPreferredSize(new java.awt.Dimension(320, 720));
+        setPreferredSize(new java.awt.Dimension(1280, 120));
+        setLayout(new java.awt.GridBagLayout());
 
         lblLogo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblLogo.setForeground(new java.awt.Color(255, 255, 255));
         lblLogo.setText("THE LOGO IS HERE");
         lblLogo.setPreferredSize(new java.awt.Dimension(225, 55));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 50, 0, 0);
+        add(lblLogo, gridBagConstraints);
 
         lblNBDashboard.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
         lblNBDashboard.setForeground(new java.awt.Color(255, 255, 255));
@@ -50,6 +62,13 @@ public class pnlNavBar extends javax.swing.JPanel {
                 lblNBDashboardMouseClicked(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 50, 0, 0);
+        add(lblNBDashboard, gridBagConstraints);
 
         lblNBEvents.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
         lblNBEvents.setForeground(new java.awt.Color(255, 255, 255));
@@ -59,6 +78,13 @@ public class pnlNavBar extends javax.swing.JPanel {
                 lblNBEventsMouseClicked(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 50, 0, 0);
+        add(lblNBEvents, gridBagConstraints);
 
         lblNBCheckout.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
         lblNBCheckout.setForeground(new java.awt.Color(255, 255, 255));
@@ -68,6 +94,13 @@ public class pnlNavBar extends javax.swing.JPanel {
                 lblNBCheckoutMouseClicked(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 50, 0, 0);
+        add(lblNBCheckout, gridBagConstraints);
 
         lblNBProfile.setFont(new java.awt.Font("Tahoma", 1, 28)); // NOI18N
         lblNBProfile.setForeground(new java.awt.Color(255, 255, 255));
@@ -77,36 +110,13 @@ public class pnlNavBar extends javax.swing.JPanel {
                 lblNBProfileMouseClicked(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(96, 96, 96)
-                .addComponent(lblNBDashboard)
-                .addGap(64, 64, 64)
-                .addComponent(lblNBEvents)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 262, Short.MAX_VALUE)
-                .addComponent(lblNBCheckout, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63)
-                .addComponent(lblNBProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNBDashboard)
-                    .addComponent(lblNBEvents)
-                    .addComponent(lblNBCheckout)
-                    .addComponent(lblNBProfile))
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 50, 0, 0);
+        add(lblNBProfile, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblNBDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNBDashboardMouseClicked
@@ -143,6 +153,21 @@ public class pnlNavBar extends javax.swing.JPanel {
         if (parentWindow != null) {
             parentWindow.dispose(); // Close the window
         }
+    }
+    
+    private void setupLogo(){
+        lblLogo.setText("");
+        lblLogo.setSize(new Dimension(225, 55)); // Set desired width and height
+        lblLogo.revalidate();
+        lblLogo.repaint();
+        
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/storage/images/logo.png"));
+        
+        Image img = logoIcon.getImage();
+        Image imgScale = img.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT);
+        ImageIcon scaledIcon = new ImageIcon(imgScale);
+        
+        lblLogo.setIcon(scaledIcon); // NOI18N
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
