@@ -6,6 +6,7 @@ package views;
 
 import views.shared.components.dlgAddTicketType;
 import controllers.EventController;
+import controllers.TicketController;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,7 +34,8 @@ public class CreateEventView extends BaseView {
      * Creates new form DashboardView
      */
     
-    private EventController controller;
+    private EventController eventController;
+    private TicketController ticketController;
     private DefaultListModel<String> ticketListModel;
     
     public CreateEventView() {
@@ -358,7 +360,7 @@ public class CreateEventView extends BaseView {
         event.setEndTimestamp(endDate, endTime);
         
         // Use the controller to save the event
-        Event createdEvent  = controller.createEvent(event); // Assuming createEvent returns a boolean
+        Event createdEvent  = eventController.createEvent(event); // Assuming createEvent returns a boolean
 
         // Provide feedback to the user
         if (createdEvent != null) {
@@ -372,7 +374,7 @@ public class CreateEventView extends BaseView {
                 ticket.setTicketPrice(new BigDecimal("0.00")); // Placeholder price, adjust as necessary
 
                 // Use the controller to save the ticket type
-                ticketSuccess &= controller.createTicketType(ticket); // Assuming createTicketType returns a boolean
+                ticketSuccess &= ticketController.createTicketType(ticket); // Assuming createTicketType returns a boolean
             }
 
             // Provide feedback to the user
@@ -420,7 +422,8 @@ public class CreateEventView extends BaseView {
     }//GEN-LAST:event_txtEventLocationActionPerformed
 
     public void myInitComponents() {  
-        controller = new EventController(db);
+        eventController = new EventController(db);
+        ticketController = new TicketController(db);
         
         //Creates the DatePickers
         DatePicker dpStartDate = new DatePicker();

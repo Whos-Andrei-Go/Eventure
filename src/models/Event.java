@@ -29,9 +29,10 @@ public class Event {
         
     }
     
-    public Event(int id, String name, String description, Timestamp startTimestamp, Timestamp endTimestamp) {
+    public Event(int id, String name, String location, String description, Timestamp startTimestamp, Timestamp endTimestamp) {
         this.id = id;
         this.name = name;
+        this.location = location;
         this.description = description;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;

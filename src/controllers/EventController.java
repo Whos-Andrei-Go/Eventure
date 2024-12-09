@@ -38,11 +38,12 @@ public class EventController {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
+                String location = rs.getString("location");
                 String description = rs.getString("description");
                 Timestamp startTime = rs.getTimestamp("start_time");
                 Timestamp endTime = rs.getTimestamp("end_time");
 
-                Event event = new Event(id, name, description, startTime, endTime);
+                Event event = new Event(id, name, location, description, startTime, endTime);
                 events.add(event);
             }
         } catch (SQLException e) {
@@ -53,13 +54,13 @@ public class EventController {
     }
     
     public Event createEvent(Event event) {
-        String query = "INSERT INTO events (name, description, location, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO events (name, location, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, event.getName());
-            pstmt.setString(2, event.getDescription());
-            pstmt.setString(3, event.getLocation());
+            pstmt.setString(2, event.getLocation());
+            pstmt.setString(3, event.getDescription());
             pstmt.setTimestamp(4, new java.sql.Timestamp(event.getStartTimestamp().getTime()));
             pstmt.setTimestamp(5, new java.sql.Timestamp(event.getEndTimestamp().getTime()));
 
@@ -78,26 +79,5 @@ public class EventController {
         }
         
         return null;
-    }
-    
-    public boolean createTicketType(TicketType ticketType) {
-        // Validate the ticket type (you can add more validation as needed)
-        if (ticketType == null || ticketType.getEventId() <= 0 || ticketType.getTicketName() == null || ticketType.getTicketName().isEmpty()) {
-            return false; // Invalid ticket type
-        }
-
-        String sql = "INSERT INTO TicketTypes (event_id, ticket_name, ticket_price) VALUES (?, ?, ?)";
-
-        try (Connection conn = db.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-            preparedStatement.setInt(1, ticketType.getEventId());
-            preparedStatement.setString(2, ticketType.getTicketName());
-            preparedStatement.setBigDecimal(3, ticketType.getTicketPrice());
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0; // Return true if at least one row was inserted
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle exceptions appropriately
-            return false; // Return false if there was an error
-        }
     }
 }
