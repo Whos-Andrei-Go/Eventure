@@ -62,13 +62,18 @@ public class EventsView extends BaseView {
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         pnlCards.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlCards.setPreferredSize(new java.awt.Dimension(400, 1000));
-        pnlCards.setLayout(new java.awt.GridLayout(0, 3, 20, 20));
+        pnlCards.setPreferredSize(new java.awt.Dimension(1200, 1200));
+        pnlCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 20));
 
         btnCreateEvent.setBackground(new java.awt.Color(153, 0, 153));
         btnCreateEvent.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         btnCreateEvent.setForeground(new java.awt.Color(255, 255, 255));
         btnCreateEvent.setText("Create Event");
+        btnCreateEvent.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCreateEventMouseClicked(evt);
+            }
+        });
         btnCreateEvent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateEventActionPerformed(evt);
@@ -80,15 +85,14 @@ public class EventsView extends BaseView {
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 1203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(hdrMain)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCreateEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(hdrMain)
+                        .addGap(659, 659, 659)
+                        .addComponent(btnCreateEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,11 +102,11 @@ public class EventsView extends BaseView {
                         .addGap(20, 20, 20)
                         .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                        .addGap(28, 28, 28)
                         .addComponent(btnCreateEvent, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20)
-                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         scrlMain.setViewportView(pnlMain);
@@ -130,6 +134,15 @@ public class EventsView extends BaseView {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCreateEventActionPerformed
 
+    private void btnCreateEventMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateEventMouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+        CreateEventView createEventView = new CreateEventView();
+        // Optionally pass the database connection or user info if needed
+        //DashboardController dashboardController = new DashboardController(dashboardView, dbConnection);
+        createEventView.setVisible(true);
+    }//GEN-LAST:event_btnCreateEventMouseClicked
+
     public void loadEventCards() {
         List<Event> events = controller.getEvents();
 
@@ -141,11 +154,18 @@ public class EventsView extends BaseView {
 
         pnlCards.removeAll();
 
-        for (Event event : events) {
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getDescription(), event.getDate());
+        int x;
+        
+        for (x = 0; x < events.size(); x++) {
+            Event event = events.get(x);
+            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
 
             eventPanel.setPreferredSize(new Dimension(250, 250));
             pnlCards.add(eventPanel);
+            
+            if (x < events.size() - 1 && (x - 3) % 4 != 0) {
+                pnlCards.add(Box.createHorizontalStrut(53));
+            }
         }
 
         pnlCards.revalidate();

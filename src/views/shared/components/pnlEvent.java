@@ -20,23 +20,30 @@ public class pnlEvent extends javax.swing.JPanel {
     private String name;
     private String description;
     private String date;
+    private String startTime;
+    private String endTime;
     
-     private JPanel overlayPanel;
+    private JPanel overlayPanel;
     
     public pnlEvent() {
         initComponents();
     }
     
-    public pnlEvent(String name, String description, String date) {
+     public pnlEvent(String name, String description, String startTime, String endTime) {
         initComponents();
         
         this.name = name;
         this.description = description;
         this.date = date;
         
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        
         this.lblName.setText(name);
         this.lblDescription.setText(description);
-        this.lblDate.setText(date);
+        this.lblDate.setText("Start: " + startTime + " - End: " + endTime);
     }
 
     /**

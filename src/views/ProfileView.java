@@ -134,7 +134,7 @@ public class ProfileView extends BaseView {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlNavBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(scrlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 1280, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,7 +163,7 @@ public class ProfileView extends BaseView {
         
         for (x = 0; x < events.size(); x++) {
             Event event = events.get(x);
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getDescription(), event.getDate());
+            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
             eventPanel.setPreferredSize(new Dimension(250, 250));
 
             pnlUpcomingCards.add(eventPanel);
