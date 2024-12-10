@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.util.List;
 import javax.swing.*;
 import models.Event;
+import utility.Session;
 import views.*;
 import views.shared.components.pnlEvent;
 
@@ -31,6 +32,23 @@ public class DashboardView extends BaseView {
         
         eventController = new EventController(db);
         loadUpcomingCards();  // Load events and display them as cards
+        
+        if("Organizer".equals(Session.getCurrentUser().getRole())){
+            loadYourEventCards();
+        }
+        
+        adjustViewSize(Session.getCurrentUser().getRole());
+    }
+    
+    public void adjustViewSize(String role){
+        switch(role){
+            case "User":
+                pnlMain.setPreferredSize(new java.awt.Dimension(1280, 600));
+                break;
+            case "Organizer":
+                pnlMain.setPreferredSize(new java.awt.Dimension(1280, 1200));
+                break;
+        }
     }
 
     /**
@@ -50,13 +68,17 @@ public class DashboardView extends BaseView {
         scrlUpcomingCards = new javax.swing.JScrollPane();
         pnlUpcomingCards = new javax.swing.JPanel();
         hdrMain = new javax.swing.JLabel();
+        pnlYourEvents = new javax.swing.JPanel();
+        hdrYourEvents = new javax.swing.JLabel();
+        scrlYourEventCards = new javax.swing.JScrollPane();
+        pnlYourEventCards = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Dashboard");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlMain.setPreferredSize(new java.awt.Dimension(1280, 720));
+        pnlMain.setPreferredSize(new java.awt.Dimension(1280, 1420));
 
         pnlUpcoming.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -68,7 +90,7 @@ public class DashboardView extends BaseView {
         scrlUpcomingCards.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrlUpcomingCards.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        pnlUpcomingCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+        pnlUpcomingCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
         scrlUpcomingCards.setViewportView(pnlUpcomingCards);
 
         javax.swing.GroupLayout pnlUpcomingLayout = new javax.swing.GroupLayout(pnlUpcoming);
@@ -89,7 +111,7 @@ public class DashboardView extends BaseView {
                 .addComponent(hdrUpcoming, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(scrlUpcomingCards, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
@@ -97,13 +119,49 @@ public class DashboardView extends BaseView {
         hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
+        pnlYourEvents.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        hdrYourEvents.setFont(new java.awt.Font("Riffic Free Medium", 0, 36)); // NOI18N
+        hdrYourEvents.setText("Your Events:");
+        hdrYourEvents.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        hdrYourEvents.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        scrlYourEventCards.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrlYourEventCards.setPreferredSize(new java.awt.Dimension(0, 0));
+
+        pnlYourEventCards.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        scrlYourEventCards.setViewportView(pnlYourEventCards);
+
+        javax.swing.GroupLayout pnlYourEventsLayout = new javax.swing.GroupLayout(pnlYourEvents);
+        pnlYourEvents.setLayout(pnlYourEventsLayout);
+        pnlYourEventsLayout.setHorizontalGroup(
+            pnlYourEventsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlYourEventsLayout.createSequentialGroup()
+                .addComponent(hdrYourEvents)
+                .addGap(0, 953, Short.MAX_VALUE))
+            .addGroup(pnlYourEventsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrlYourEventCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlYourEventsLayout.setVerticalGroup(
+            pnlYourEventsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlYourEventsLayout.createSequentialGroup()
+                .addComponent(hdrYourEvents, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(scrlYourEventCards, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlUpcoming, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlUpcoming, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlYourEvents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -116,12 +174,14 @@ public class DashboardView extends BaseView {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(112, 112, 112)
                 .addComponent(pnlUpcoming, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(pnlYourEvents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(362, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addGap(30, 30, 30)
                     .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(750, Short.MAX_VALUE)))
+                    .addContainerGap(1281, Short.MAX_VALUE)))
         );
 
         scrlMain.setViewportView(pnlMain);
@@ -178,6 +238,39 @@ public class DashboardView extends BaseView {
         pnlUpcomingCards.repaint();
     }
     
+    public void loadYourEventCards() {
+        List<Event> events = eventController.getEvents();
+
+        if (events == null || events.isEmpty()) {
+            System.out.println("No events to display.");
+        } else {
+            System.out.println("Events fetched: " + events.size());
+        }
+
+        pnlYourEventCards.removeAll();
+
+        int x;
+        
+        for (x = 0; x < events.size(); x++) {
+            Event event = events.get(x);
+            if (event.getCreatorId() != Session.getCurrentUser().getId()){
+                continue;
+            }
+            
+            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+
+            eventPanel.setPreferredSize(new Dimension(250, 250));
+            pnlYourEventCards.add(eventPanel);
+            
+            if (x < events.size() - 1) {
+                pnlYourEventCards.add(Box.createHorizontalStrut(20));
+            }
+        }
+
+        pnlYourEventCards.revalidate();
+        pnlYourEventCards.repaint();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -216,11 +309,15 @@ public class DashboardView extends BaseView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel hdrMain;
     private javax.swing.JLabel hdrUpcoming;
+    private javax.swing.JLabel hdrYourEvents;
     private javax.swing.JPanel pnlMain;
     private views.shared.components.pnlNavBar pnlNavBar1;
     private javax.swing.JPanel pnlUpcoming;
     private javax.swing.JPanel pnlUpcomingCards;
+    private javax.swing.JPanel pnlYourEventCards;
+    private javax.swing.JPanel pnlYourEvents;
     private javax.swing.JScrollPane scrlMain;
     private javax.swing.JScrollPane scrlUpcomingCards;
+    private javax.swing.JScrollPane scrlYourEventCards;
     // End of variables declaration//GEN-END:variables
 }

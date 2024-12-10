@@ -55,10 +55,11 @@ public class ProfileView extends BaseView {
         setResizable(false);
 
         scrlMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrlMain.setPreferredSize(new java.awt.Dimension(960, 600));
 
         pnlMain.setAlignmentX(0.0F);
         pnlMain.setAlignmentY(0.0F);
-        pnlMain.setMaximumSize(new java.awt.Dimension(2560, 1440));
+        pnlMain.setMaximumSize(new java.awt.Dimension(10000, 10000));
         pnlMain.setMinimumSize(new java.awt.Dimension(640, 360));
         pnlMain.setPreferredSize(new java.awt.Dimension(960, 600));
         pnlMain.setLayout(new java.awt.CardLayout());
@@ -101,25 +102,24 @@ public class ProfileView extends BaseView {
             switch (command) {
                 case "Overview":
                     pnlMain.add(new pnlOverview(db), "Overview");
-                    cl.show(pnlMain, "Overview");
                     break;
                 case "My Events":
                     pnlMain.add(new pnlMyEvents(db), "My Events");
-                    cl.show(pnlMain, "My Events");
                     break;
                 case "My Tickets":
                     pnlMain.add(new pnlMyTickets(db), "My Tickets");
-                    cl.show(pnlMain, "My Tickets");
                     break;
                 case "Event History":
                     pnlMain.add(new pnlEventHistory(db), "Event History");
-                    cl.show(pnlMain, "Event History");
                     break;
                 case "Payment Methods":
                     pnlMain.add(new pnlPaymentMethods(db), "Payment Methods");
-                    cl.show(pnlMain, "Payment Methods");
                     break;
             }
+            
+            cl.show(pnlMain, command);
+            pnlMain.revalidate();
+            pnlMain.repaint();
         }
     }
     

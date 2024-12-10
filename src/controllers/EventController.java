@@ -37,13 +37,14 @@ public class EventController {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
+                int creatorId = rs.getInt("creator_id");
                 String name = rs.getString("name");
                 String location = rs.getString("location");
                 String description = rs.getString("description");
                 Timestamp startTime = rs.getTimestamp("start_time");
                 Timestamp endTime = rs.getTimestamp("end_time");
 
-                Event event = new Event(id, name, location, description, startTime, endTime);
+                Event event = new Event(id, creatorId, name, location, description, startTime, endTime);
                 events.add(event);
             }
         } catch (SQLException e) {
@@ -54,15 +55,16 @@ public class EventController {
     }
     
     public Event createEvent(Event event) {
-        String query = "INSERT INTO events (name, location, description, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO events (creator_id, name, location, description, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setString(1, event.getName());
-            pstmt.setString(2, event.getLocation());
-            pstmt.setString(3, event.getDescription());
-            pstmt.setTimestamp(4, new java.sql.Timestamp(event.getStartTimestamp().getTime()));
-            pstmt.setTimestamp(5, new java.sql.Timestamp(event.getEndTimestamp().getTime()));
+            pstmt.setInt(1, event.getCreatorId());
+            pstmt.setString(2, event.getName());
+            pstmt.setString(3, event.getLocation());
+            pstmt.setString(4, event.getDescription());
+            pstmt.setTimestamp(5, new java.sql.Timestamp(event.getStartTimestamp().getTime()));
+            pstmt.setTimestamp(6, new java.sql.Timestamp(event.getEndTimestamp().getTime()));
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {

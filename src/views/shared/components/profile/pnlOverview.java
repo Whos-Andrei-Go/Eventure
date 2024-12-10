@@ -5,7 +5,9 @@
 package views.shared.components.profile;
 
 import controllers.UserController;
+import java.awt.Window;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import models.User;
 import utility.Database;
 import utility.PasswordUtils;
@@ -53,9 +55,10 @@ public class pnlOverview extends javax.swing.JPanel {
         txtUsername = new javax.swing.JTextField();
         lblEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
-        lblPassword = new javax.swing.JLabel();
+        lblDeleteAccount = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         btnSaveChanges = new javax.swing.JButton();
+        lblPassword1 = new javax.swing.JLabel();
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
         hdrMain.setText("OVERVIEW");
@@ -106,8 +109,14 @@ public class pnlOverview extends javax.swing.JPanel {
             }
         });
 
-        lblPassword.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        lblPassword.setText("Password:");
+        lblDeleteAccount.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblDeleteAccount.setForeground(new java.awt.Color(204, 0, 51));
+        lblDeleteAccount.setText("Delete account");
+        lblDeleteAccount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDeleteAccountMouseClicked(evt);
+            }
+        });
 
         txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtPassword.setPreferredSize(new java.awt.Dimension(500, 30));
@@ -127,44 +136,56 @@ public class pnlOverview extends javax.swing.JPanel {
             }
         });
 
+        lblPassword1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblPassword1.setText("Password:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(hdrMain))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblEmail)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblUsername)
-                                .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lblFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblPassword1)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblPassword)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(389, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                                        .addComponent(lblUsername)
+                                        .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(lblFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lblLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblEmail))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 188, Short.MAX_VALUE)
+                                .addComponent(lblDeleteAccount))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(hdrMain)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(54, 54, 54)
+                        .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -181,15 +202,15 @@ public class pnlOverview extends javax.swing.JPanel {
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(lblEmail)
-                .addGap(18, 18, 18)
+                .addGap(22, 22, 22)
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblPassword)
-                .addGap(18, 18, 18)
-                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addComponent(lblPassword1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDeleteAccount))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -214,25 +235,57 @@ public class pnlOverview extends javax.swing.JPanel {
         User updatedUser = new User();
         updatedUser.setId(Session.getCurrentUser().getId());
         updatedUser.setUsername(txtUsername.getText());
-        
-        String hashedPassword = PasswordUtils.hashPassword(txtPassword.getText());
-        updatedUser.setPassword(hashedPassword);
+        updatedUser.setPassword(txtPassword.getText());
         updatedUser.setFirstName(txtFirstName.getText());
         updatedUser.setLastName(txtLastName.getText());
         updatedUser.setEmail(txtEmail.getText());
-        updatedUser.setRole("user");
+        updatedUser.setRole(Session.getCurrentUser().getRole());
 
         UserController userController = new UserController(new Database());
-        if (userController.updateUser(updatedUser)) {
-            JOptionPane.showMessageDialog(this, "User details updated successfully!");
+        String existingHashedPassword = Session.getCurrentUser().getPassword();
+        
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        
+        if (userController.updateUser(updatedUser, existingHashedPassword)) {
+            JOptionPane.showMessageDialog(parentWindow, "User details updated successfully!");
+            Session.setCurrentUser(updatedUser);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to update user details. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parentWindow, "Failed to update user details. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnSaveChangesMouseClicked
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSaveChangesActionPerformed
+
+    private void lblDeleteAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteAccountMouseClicked
+        // TODO add your handling code here:
+        int userId = Session.getCurrentUser().getId(); // Get the current user's ID
+        UserController userController = new UserController(new Database());
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        
+        // Prompt the user for confirmation before deleting the account
+        int confirmation = JOptionPane.showConfirmDialog(parentWindow,
+                "Are you sure you want to delete your account? This action cannot be undone.",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Proceed to delete the user
+            boolean deletionSuccess = userController.deleteUser(userId);
+
+            
+             
+            if (deletionSuccess) {
+                JOptionPane.showMessageDialog(parentWindow, "Your account has been successfully deleted.");
+                // Log the user out or close the application as needed
+                Session.logout(parentWindow); 
+            } else {
+                JOptionPane.showMessageDialog(parentWindow, "There was an error deleting your account. Please try again.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_lblDeleteAccountMouseClicked
 
     private void loadUserDetails() {
         // Fetch user details (simulate or fetch from actual source)
@@ -252,10 +305,11 @@ public class pnlOverview extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSaveChanges;
     private javax.swing.JLabel hdrMain;
+    private javax.swing.JLabel lblDeleteAccount;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblFirstName;
     private javax.swing.JLabel lblLastName;
-    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblPassword1;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtFirstName;

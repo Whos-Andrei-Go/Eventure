@@ -4,7 +4,9 @@
  */
 package utility;
 
+import java.awt.Window;
 import models.User;
+import views.LoginView;
 
 /**
  *
@@ -19,5 +21,11 @@ public class Session {
 
     public static User getCurrentUser() {
         return currentUser;
+    }
+    
+    public static void logout(Window currentWindow){
+        currentWindow.dispose();
+        LoginView loginView = new LoginView();
+        loginView.setVisible(true);
     }
 }

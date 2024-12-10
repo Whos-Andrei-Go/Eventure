@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class Event {
     private int id;
+    private int creatorId;
     private String name;
     private String location;
     private String description;
@@ -29,8 +30,9 @@ public class Event {
         
     }
     
-    public Event(int id, String name, String location, String description, Timestamp startTimestamp, Timestamp endTimestamp) {
+    public Event(int id, int creatorId, String name, String location, String description, Timestamp startTimestamp, Timestamp endTimestamp) {
         this.id = id;
+        this.creatorId = creatorId;
         this.name = name;
         this.location = location;
         this.description = description;
@@ -42,6 +44,10 @@ public class Event {
     public int getId() { 
         return id; 
     }
+    public int getCreatorId() { 
+        return creatorId; 
+    }
+    
     
     public String getName() { 
         return name; 
@@ -75,6 +81,10 @@ public class Event {
 
     public void setId(int id) { 
         this.id = id; 
+    }
+    
+    public void setCreatorId(int creatorId) { 
+        this.creatorId = creatorId; 
     }
     
     public void setName(String name) {

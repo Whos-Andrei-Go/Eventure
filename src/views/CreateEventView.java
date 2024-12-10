@@ -7,6 +7,7 @@ package views;
 import views.shared.components.dlgAddTicketType;
 import controllers.EventController;
 import controllers.TicketController;
+import controllers.UserController;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,8 +20,10 @@ import java.util.List;
 import javax.swing.*;
 import models.Event;
 import models.TicketType;
+import models.User;
 import raven.datetime.component.date.DatePicker;
 import raven.datetime.component.time.TimePicker;
+import utility.Session;
 import views.*;
 import views.shared.components.pnlEvent;
 
@@ -37,8 +40,10 @@ public class CreateEventView extends BaseView {
     private EventController eventController;
     private TicketController ticketController;
     private DefaultListModel<String> ticketListModel;
+    private UserController userController;
     
     public CreateEventView() {
+        userController =  new UserController(db);
         ticketListModel = new DefaultListModel<>();
         initComponents();
         myInitComponents();
@@ -358,6 +363,7 @@ public class CreateEventView extends BaseView {
         event.setDescription(eventDescription);
         event.setStartTimestamp(startDate, startTime);
         event.setEndTimestamp(endDate, endTime);
+        event.setCreatorId(Session.getCurrentUser().getId());
         
         // Use the controller to save the event
         Event createdEvent  = eventController.createEvent(event); // Assuming createEvent returns a boolean
@@ -367,24 +373,43 @@ public class CreateEventView extends BaseView {
             // Now add ticket types to the TicketTypes table
             boolean ticketSuccess = true;
             for (String ticketType : ticketTypes) {
-                TicketType ticket = new TicketType(); // Assuming you have a constructor or setters
-                ticket.setEventId(event.getId()); // Assuming you have a method to get the event ID
-                ticket.setTicketName("MY NUTS");
-                // Set a default price or gather it from user input if needed
-                ticket.setTicketPrice(new BigDecimal("0.00")); // Placeholder price, adjust as necessary
+                TicketType ticket = new TicketType();
+                String[] parts = ticketType.split(" - ");
 
-                // Use the controller to save the ticket type
-                ticketSuccess &= ticketController.createTicketType(ticket); // Assuming createTicketType returns a boolean
+                if (parts.length == 2) {
+                    String ticketName = parts[0].trim();
+                    String pricePart = parts[1].trim();
+                    String priceString = pricePart.replaceAll("[^0-9.]", "");
+                    BigDecimal ticketPrice = new BigDecimal(priceString.isEmpty() ? "0.00" : priceString);
+
+                    ticket.setEventId(createdEvent.getId());
+                    ticket.setTicketName(ticketName);
+                    ticket.setTicketPrice(ticketPrice);
+
+                    ticketSuccess &= ticketController.createTicketType(ticket);
+                }
             }
+
 
             // Provide feedback to the user
             if (ticketSuccess) {
+                if (!"Organizer".equals(Session.getCurrentUser().getRole())){
+                    User updatedUser = Session.getCurrentUser();
+                    updatedUser.setRole("Organizer");
+                    
+                    userController.updateUser(updatedUser);
+                    Session.setCurrentUser(updatedUser);
+                }
+                
                 JOptionPane.showMessageDialog(this, "Event and ticket types created successfully!");
             } else {
                 JOptionPane.showMessageDialog(this, "Event created, but failed to add ticket types. Please try again.");
             }
 
             this.dispose(); // Close the dialog or navigate to another view
+            
+            EventsView eventsView = new EventsView();
+            eventsView.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create event. Please try again.");
         }

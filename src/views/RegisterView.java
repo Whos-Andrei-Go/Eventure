@@ -10,23 +10,28 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 import com.formdev.flatlaf.FlatLightLaf;
+import controllers.UserController;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import models.User;
 import utility.Database;
 import utility.PasswordUtils;
+import utility.Session;
 /**
  *
  * @author andre
  */
-public class RegisterView extends javax.swing.JFrame {
+public class RegisterView extends BaseView {
 
     
     /**
      * Creates new form Dashboard
      */
+    private UserController userController;
     public RegisterView() {
+        userController = new UserController(db);
         initComponents();
         myInitComponents();
     }
@@ -348,22 +353,24 @@ public class RegisterView extends javax.swing.JFrame {
             return false;
         }
 
-        // Insert new user into the database
-        String hashedPassword = PasswordUtils.hashPassword(password);
-        try (PreparedStatement pstmt = db.getConnection().prepareStatement(
-                "INSERT INTO users (first_name, last_name, username, email, password) VALUES (?, ?, ?, ?, ?)")) {
-            pstmt.setString(1, firstName);
-            pstmt.setString(2, lastName);
-            pstmt.setString(3, username);
-            pstmt.setString(4, email);
-            pstmt.setString(5, hashedPassword);
-            pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error registering user: " + ex.getMessage());
+        User newUser = new User();
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setUsername(username);
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setRole("User");
+
+        try {
+            userController.createUser(newUser);
+            
+            //Because I need it to grab the hashed password
+            User createdUser = userController.getUserByUsername(username);
+            Session.setCurrentUser(createdUser);
+            return true;
+        } catch (Exception ex) {
             return false;
         }
-
-        return true;
     }
     
     /**
