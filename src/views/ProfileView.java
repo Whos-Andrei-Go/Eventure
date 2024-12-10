@@ -31,7 +31,7 @@ public class ProfileView extends BaseView {
     
     public ProfileView() {
         initComponents();
-        pnlMain.add(new pnlOverview());
+        pnlMain.add(new pnlOverview(db));
         
         eventController = new EventController(db);
     }
@@ -100,23 +100,23 @@ public class ProfileView extends BaseView {
 
             switch (command) {
                 case "Overview":
-                    pnlMain.add(new pnlOverview(), "Overview");
+                    pnlMain.add(new pnlOverview(db), "Overview");
                     cl.show(pnlMain, "Overview");
                     break;
                 case "My Events":
-                    pnlMain.add(new pnlMyEvents(), "My Events");
+                    pnlMain.add(new pnlMyEvents(db), "My Events");
                     cl.show(pnlMain, "My Events");
                     break;
                 case "My Tickets":
-                    pnlMain.add(new pnlMyTickets(), "My Tickets");
+                    pnlMain.add(new pnlMyTickets(db), "My Tickets");
                     cl.show(pnlMain, "My Tickets");
                     break;
                 case "Event History":
-                    pnlMain.add(new pnlEventHistory(), "Event History");
+                    pnlMain.add(new pnlEventHistory(db), "Event History");
                     cl.show(pnlMain, "Event History");
                     break;
                 case "Payment Methods":
-                    pnlMain.add(new pnlPaymentMethods(), "Payment Methods");
+                    pnlMain.add(new pnlPaymentMethods(db), "Payment Methods");
                     cl.show(pnlMain, "Payment Methods");
                     break;
             }

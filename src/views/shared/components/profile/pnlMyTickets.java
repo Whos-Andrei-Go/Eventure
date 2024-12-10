@@ -4,6 +4,8 @@
  */
 package views.shared.components.profile;
 
+import utility.Database;
+
 /**
  *
  * @author andre
@@ -14,6 +16,10 @@ public class pnlMyTickets extends javax.swing.JPanel {
      * Creates new form pnlOverview
      */
     public pnlMyTickets() {
+        initComponents();
+    }
+    
+    public pnlMyTickets(Database db) {
         initComponents();
     }
 

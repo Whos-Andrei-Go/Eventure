@@ -349,7 +349,7 @@ public class RegisterView extends javax.swing.JFrame {
         }
 
         // Insert new user into the database
-        String hashedPassword = PasswordUtils.hashPassword(password); //hashPassword(password);
+        String hashedPassword = PasswordUtils.hashPassword(password);
         try (PreparedStatement pstmt = db.getConnection().prepareStatement(
                 "INSERT INTO users (first_name, last_name, username, email, password) VALUES (?, ?, ?, ?, ?)")) {
             pstmt.setString(1, firstName);

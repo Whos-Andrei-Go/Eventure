@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import models.User;
 import org.mindrot.jbcrypt.BCrypt;
 import utility.Database;
+import utility.Session;
 /**
  *
  * @author andre
@@ -56,6 +57,11 @@ public class LoginView extends BaseView {
         setTitle("Eventure - Login");
         setPreferredSize(new java.awt.Dimension(1280, 720));
         setResizable(false);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         hdrLogin.setFont(new java.awt.Font("Riffic Free Medium", 1, 64)); // NOI18N
         hdrLogin.setText("Login");
@@ -90,6 +96,11 @@ public class LoginView extends BaseView {
 
         txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         txtPassword.setPreferredSize(new java.awt.Dimension(500, 50));
+        txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPasswordKeyPressed(evt);
+            }
+        });
 
         btnLogin.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         btnLogin.setText("Login");
@@ -101,6 +112,11 @@ public class LoginView extends BaseView {
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
+            }
+        });
+        btnLogin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnLoginKeyPressed(evt);
             }
         });
 
@@ -187,7 +203,19 @@ public class LoginView extends BaseView {
         Image imgScale = img.getScaledInstance(lblLogo.getWidth(), lblLogo.getHeight(), Image.SCALE_DEFAULT);
         ImageIcon scaledIcon = new ImageIcon(imgScale);
         
-        lblLogo.setIcon(scaledIcon); // NOI18N
+        lblLogo.setIcon(scaledIcon);
+        
+        getRootPane().registerKeyboardAction(e -> {
+            String username = txtUsername.getText();
+            String password = new String(txtPassword.getPassword());
+
+            if (validateLogin(username, password)) {
+                JOptionPane.showMessageDialog(this, "Login successful!");
+                openDashboard();
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid username or password");
+            }
+        }, KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
     
     private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
@@ -231,6 +259,18 @@ public class LoginView extends BaseView {
         
     }//GEN-LAST:event_lblLogoComponentShown
 
+    private void btnLoginKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnLoginKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLoginKeyPressed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formKeyPressed
+
+    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordKeyPressed
+
     private void openDashboard() {
         // Dispose of the login view
         this.dispose();
@@ -260,7 +300,13 @@ public class LoginView extends BaseView {
 
         if (user != null) {
             // Use bcrypt to compare the entered password with the stored hashed password
-            return BCrypt.checkpw(password, user.getPassword());
+            boolean checkPassword = BCrypt.checkpw(password, user.getPassword());
+            
+            if (checkPassword){
+                Session.setCurrentUser(user);
+            }
+            
+            return checkPassword;
         }
 
         // If user doesn't exist
