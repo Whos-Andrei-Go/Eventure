@@ -4,22 +4,27 @@
  */
 package views.shared.components;
 
+import controllers.TicketController;
+import java.awt.Dimension;
 import java.math.BigDecimal;
+import java.util.Map;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import views.BaseView;
-import views.EnterPaymentMethodView;
+import javax.swing.JOptionPane;
+import models.Cart;
+import models.TicketType;
+import utility.Database;
+import utility.Session;
 
 /**
  *
  * @author andre
  */
-public class pnlCheckoutDetails extends javax.swing.JPanel {
+public class pnlFinalCheckoutDetails extends javax.swing.JPanel {
 
     /**
      * Creates new form pnlCheckoutDetails
      */
-    public pnlCheckoutDetails() {
+    public pnlFinalCheckoutDetails() {
         initComponents();
     }
 
@@ -43,7 +48,7 @@ public class pnlCheckoutDetails extends javax.swing.JPanel {
         btnProceed.setBackground(new java.awt.Color(153, 0, 153));
         btnProceed.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         btnProceed.setForeground(new java.awt.Color(255, 255, 255));
-        btnProceed.setText("Proceed to Checkout");
+        btnProceed.setText("Submit");
         btnProceed.setBorder(null);
         btnProceed.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -105,17 +110,50 @@ public class pnlCheckoutDetails extends javax.swing.JPanel {
 
     private void btnProceedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProceedMouseClicked
         // TODO add your handling code here:
-        BaseView parentWindow = (BaseView) SwingUtilities.getWindowAncestor(this);
-        parentWindow.dispose();
+        TicketController ticketController = new TicketController(new Database());
+        Map<Integer, Integer> cartTickets = Cart.getInstance().getTickets();
+        
+        // Check if there are tickets in the cart
+        if (cartTickets.isEmpty()) {
+            // If the cart is empty, you could show a message or handle the case accordingly.
+        } else {
+            int row = 0;
+            BigDecimal cartTotal = new BigDecimal("0.00");  // Initialize cart total
 
-        EnterPaymentMethodView enterPaymentMethodView = new EnterPaymentMethodView(new BigDecimal(lblTotalPrice.getText()));
-        enterPaymentMethodView.setVisible(true);
+            // Loop through the grouped tickets and display one panel per ticket type
+            for (Map.Entry<Integer, Integer> entry : cartTickets.entrySet()) {
+                int ticketTypeId = entry.getKey();
+                int totalQuantity = entry.getValue();
+
+                // Retrieve the ticket type details
+                TicketType ticketType = ticketController.getTicketTypeById(ticketTypeId);
+
+                if (ticketType != null) {
+                    // Calculate the total price for this ticket type
+                    BigDecimal totalPrice = ticketType.getPrice().multiply(BigDecimal.valueOf(totalQuantity));
+                    cartTotal = cartTotal.add(totalPrice);
+
+                    // Insert the tickets into the database (assuming addTicketsToDatabase() method is available in TicketController)
+                    boolean inserted = ticketController.addTicketsToDatabase(ticketTypeId, totalQuantity, Session.getCurrentUser().getId());  // Assume userId is available
+
+                    // Check if the tickets were inserted successfully
+                    if (!inserted) {
+                        JOptionPane.showMessageDialog(this, "Failed to add tickets to the database for ticket type: " + ticketType.getName());
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(this, "Tickets successfully purchased!");
+                    }
+
+
+                 
+                }
+            }
+        }
+
     }//GEN-LAST:event_btnProceedMouseClicked
 
     private void btnProceedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProceedActionPerformed
         // TODO add your handling code here:
-        
-      
     }//GEN-LAST:event_btnProceedActionPerformed
 
     public JLabel getLblTotalPrice() {

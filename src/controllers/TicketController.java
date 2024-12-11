@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import models.Ticket;
 import models.TicketType;
 import utility.Database;
 
@@ -24,6 +25,69 @@ public class TicketController {
     public TicketController(Database db) {
         this.db = db;
     }
+    
+    public boolean addTicketsToDatabase(int ticketTypeId, int quantity, int userId) {
+        // Assuming you have a method to retrieve the TicketType
+        TicketType ticketType = getTicketTypeById(ticketTypeId);  // Get the ticket type from DB
+        if (ticketType == null) {
+            return false;  // Ticket type not found
+        }
+
+        // Get the current date for the purchase
+        java.sql.Date purchaseDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Now insert N tickets into the database with the user_id and current purchase date
+        try {
+            String sql = "INSERT INTO tickets (user_id, ticket_type_id, purchase_date) VALUES (?, ?, ?)";
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
+
+            // Insert the tickets one by one
+            for (int i = 0; i < quantity; i++) {
+                stmt.setInt(1, userId);  // Set the user_id
+                stmt.setInt(2, ticketTypeId);  // Set the ticket_type_id
+                stmt.setDate(3, purchaseDate);  // Set the current date as purchase date
+                stmt.addBatch();  // Add to batch
+            }
+
+            // Execute the batch insert
+            int[] rowsAffected = stmt.executeBatch();
+
+            return rowsAffected.length == quantity;  // If all rows were inserted, return true
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;  // Return false if there's an error
+        }
+    }
+
+    public List<Ticket> getTicketsByUserId(int userId) {
+        List<Ticket> tickets = new ArrayList<>();
+
+        // SQL query to fetch tickets for the specified user_id
+        String sql = "SELECT * FROM tickets WHERE user_id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, userId);  // Set the userId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the result set
+            while (rs.next()) {
+                // Create a Ticket object and populate it from the result set
+                Ticket ticket = new Ticket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setUserId(rs.getInt("user_id"));
+                ticket.setTicketTypeId(rs.getInt("ticket_type_id"));
+                ticket.setPurchaseDate(rs.getTimestamp("purchase_date"));
+
+                // Add the ticket to the list
+                tickets.add(ticket);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return tickets;  // Return the list of tickets
+    }
+
     
     public boolean createTicketType(TicketType ticketType) {
         // Validate the ticket type (you can add more validation as needed)

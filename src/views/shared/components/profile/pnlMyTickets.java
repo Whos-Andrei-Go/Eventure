@@ -4,6 +4,10 @@
  */
 package views.shared.components.profile;
 
+import java.sql.*;
+import java.beans.Statement;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 import utility.Database;
 
 /**
@@ -21,7 +25,58 @@ public class pnlMyTickets extends javax.swing.JPanel {
     
     public pnlMyTickets(Database db) {
         initComponents();
+        updateTable(db);
     }
+    
+    public void updateTable(Database db) {
+        // Create the query to join tblTickets, tblTicketType, and tblEvent
+        String query = "SELECT t.id AS ticket_id, "
+                + "tt.name AS ticket_type_name, "
+                + "tt.price AS ticket_price, "
+                + "e.name AS event_name, "
+                + "t.status "
+                + "FROM Tickets t "
+                + "JOIN TicketTypes tt ON t.ticket_type_id = tt.id "
+                + "JOIN Events e ON tt.event_id = e.id";
+
+        try(PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
+            // Assuming you have a method to get a database connection
+            ResultSet rs = stmt.executeQuery();
+
+            // Create a vector to hold the column names (headers)
+            Vector<String> columnNames = new Vector<>();
+            columnNames.add("Ticket ID");
+            columnNames.add("Ticket Type");
+            columnNames.add("Ticket Price");
+            columnNames.add("Event Name");
+            columnNames.add("Status");
+
+            // Create a vector to hold the rows of data
+            Vector<Vector<Object>> data = new Vector<>();
+
+            // Iterate through the result set to get the data
+            while (rs.next()) {
+                Vector<Object> row = new Vector<>();
+                row.add(rs.getInt("ticket_id"));  // Ticket ID
+                row.add(rs.getString("ticket_type_name"));  // Ticket Type Name
+                row.add(rs.getBigDecimal("ticket_price"));  // Ticket Price
+                row.add(rs.getString("event_name"));  // Event Name
+                row.add(rs.getString("status"));  // Ticket Status
+                data.add(row);
+            }
+
+            // Assuming you have a JTable named tblTickets
+            DefaultTableModel model = new DefaultTableModel(data, columnNames);
+            tblTickets.setModel(model);
+
+            // Close the resources
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -33,11 +88,34 @@ public class pnlMyTickets extends javax.swing.JPanel {
     private void initComponents() {
 
         hdrMain = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblTickets = new javax.swing.JTable();
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
         hdrMain.setText("MY TICKETS");
         hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        tblTickets.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Ticket Number", "Event Name", "Ticket Type", "Price", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblTickets);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -45,20 +123,26 @@ public class pnlMyTickets extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addComponent(hdrMain)
-                .addContainerGap(489, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hdrMain)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 872, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(487, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel hdrMain;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblTickets;
     // End of variables declaration//GEN-END:variables
 }

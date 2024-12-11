@@ -54,6 +54,39 @@ public class EventController {
         return events;
     }
     
+    public Event getEventByTicketTypeId(int ticketTypeId) {
+        Event event = null;
+
+        // SQL query to fetch the event associated with the ticket type
+        String sql = "SELECT e.* FROM events e "
+                + "JOIN TicketTypes tt ON e.id = tt.event_id "
+                + "WHERE tt.id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, ticketTypeId);  // Set the ticketTypeId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Check if the result set contains data
+            if (rs.next()) {
+                // Create an Event object and populate it from the result set
+                int id = rs.getInt("id");
+                int creatorId = rs.getInt("creator_id");
+                String name = rs.getString("name");
+                String location = rs.getString("location");
+                String description = rs.getString("description");
+                Timestamp startTime = rs.getTimestamp("start_time");
+                Timestamp endTime = rs.getTimestamp("end_time");
+                
+                event = new Event(id, creatorId, name, location, description, startTime, endTime);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return event;  // Return the event or null if not found
+    }
+
+    
     public Event createEvent(Event event) {
         String query = "INSERT INTO events (creator_id, name, location, description, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
 

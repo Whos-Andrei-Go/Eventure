@@ -5,12 +5,17 @@
 package views.shared.components.profile;
 
 import controllers.EventController;
+import controllers.TicketController;
 import java.awt.Dimension;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.Box;
 import models.Event;
+import models.Ticket;
+import models.TicketType;
 import utility.Database;
 import utility.Session;
 import views.shared.components.pnlEvent;
@@ -25,6 +30,7 @@ public class pnlEventHistory extends javax.swing.JPanel {
      * Creates new form pnlOverview
      */
     private EventController eventController;
+    private TicketController ticketController;
     
     public pnlEventHistory() {
         initComponents();
@@ -32,6 +38,7 @@ public class pnlEventHistory extends javax.swing.JPanel {
     
     public pnlEventHistory(Database db) {
         eventController = new EventController(db);
+        ticketController = new TicketController(db);
         initComponents();
         refreshData();  // Load events and display them as cards
     }
@@ -41,39 +48,67 @@ public class pnlEventHistory extends javax.swing.JPanel {
     }
 
     public void loadEventHistory() {
-        List<Event> events = eventController.getEvents();
+        // Get the current user's ID (assuming you have a method to get the logged-in user's ID)
+        int currentUserId = Session.getCurrentUser().getId();
 
-        if (events == null || events.isEmpty()) {
-            System.out.println("No events to display.");
+        // Fetch the user's tickets from the database
+        List<Ticket> userTickets = ticketController.getTicketsByUserId(currentUserId);
+
+        if (userTickets == null || userTickets.isEmpty()) {
+            System.out.println("No tickets found for this user.");
         } else {
-            System.out.println("Events fetched: " + events.size());
+            System.out.println("Tickets fetched: " + userTickets.size());
         }
 
         pnlCards.removeAll();
 
-        int x;
-        
-        for (x = 0; x < events.size(); x++) {
-            Event event = events.get(x);
-            
-            Timestamp eventTimestamp = event.getStartTimestamp();
-            LocalDateTime eventStartTime = eventTimestamp.toLocalDateTime();
-            LocalDateTime currentTime = LocalDateTime.now();
-    
-            if (eventStartTime.isAfter(currentTime)){
-                continue;
-            }
-            
-            pnlEvent eventPanel = new pnlEvent(event);
+        // Use a Set to track added event IDs (to ensure uniqueness)
+        Set<Integer> addedEventIds = new HashSet<>();
 
-            eventPanel.setPreferredSize(new Dimension(250, 250));
-            pnlCards.add(eventPanel);
-            
-            if (x < events.size() - 1 && (x - 3) % 4 != 0) {
-                pnlCards.add(Box.createHorizontalStrut(53));
+        // Loop through the tickets and display their associated events
+        for (Ticket ticket : userTickets) {
+            // Retrieve the ticket type from the ticket
+            TicketType ticketType = ticketController.getTicketTypeById(ticket.getTicketTypeId());
+
+            if (ticketType != null) {
+                // Retrieve the event for this ticket type
+                Event event = eventController.getEventByTicketTypeId(ticketType.getId());
+
+                if (event != null) {
+                    // Skip if the event has already been added
+                    if (addedEventIds.contains(event.getId())) {
+                        continue;  // Skip this ticket if its event is already added
+                    }
+
+                    // Get the event's start time and compare it with the current time
+                    Timestamp eventTimestamp = event.getStartTimestamp();
+                    LocalDateTime eventStartTime = eventTimestamp.toLocalDateTime();
+                    LocalDateTime currentTime = LocalDateTime.now();
+
+                    // If the event has already started, skip it
+                    if (eventStartTime.isAfter(currentTime)) {
+                        continue;
+                    }
+
+                    // Create and configure the event panel
+                    pnlEvent eventPanel = new pnlEvent(event);
+                    eventPanel.setPreferredSize(new Dimension(250, 250));
+
+                    // Add the event panel to the panel for upcoming cards
+                    pnlCards.add(eventPanel);
+
+                    // Add the event's ID to the set of added events to ensure uniqueness
+                    addedEventIds.add(event.getId());
+
+                    // Add a horizontal strut between event panels (if necessary)
+                    if (ticket != userTickets.get(userTickets.size() - 1)) {
+                        pnlCards.add(Box.createHorizontalStrut(20));
+                    }
+                }
             }
         }
 
+        // Revalidate and repaint the panel to display the changes
         pnlCards.revalidate();
         pnlCards.repaint();
     }
