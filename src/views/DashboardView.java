@@ -4,7 +4,6 @@
  */
 package views;
 
-import controllers.EventController;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -27,12 +26,14 @@ public class DashboardView extends BaseView {
      * Creates new form DashboardView
      */
     
-    private EventController eventController;
-    
     public DashboardView() {
         initComponents();
-        
-        eventController = new EventController(db);
+
+        refreshData();
+    }
+    
+    @Override
+    public void refreshData(){
         loadUpcomingCards();  // Load events and display them as cards
         
         if("Organizer".equals(Session.getCurrentUser().getRole())){

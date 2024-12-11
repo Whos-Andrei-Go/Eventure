@@ -31,6 +31,10 @@ public class pnlMyEvents extends javax.swing.JPanel {
     public pnlMyEvents(Database db) {
         eventController = new EventController(db);
         initComponents();
+        refreshData();
+    }
+    
+    public void refreshData(){
         loadMyEvents();  // Load events and display them as cards
     }
 

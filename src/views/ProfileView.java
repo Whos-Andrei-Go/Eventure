@@ -27,13 +27,10 @@ public class ProfileView extends BaseView {
      * Creates new form DashboardView
      */
     
-    private EventController eventController;
     
     public ProfileView() {
         initComponents();
         pnlMain.add(new pnlOverview(db));
-        
-        eventController = new EventController(db);
     }
 
     /**

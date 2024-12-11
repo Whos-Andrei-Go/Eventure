@@ -5,9 +5,6 @@
 package views;
 
 import views.shared.components.dlgAddTicketType;
-import controllers.EventController;
-import controllers.TicketController;
-import controllers.UserController;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,11 +33,6 @@ public class EventView extends BaseView {
     /**
      * Creates new form DashboardView
      */
-    
-    private EventController eventController;
-    private TicketController ticketController = new TicketController(db);;
-
-    private UserController userController =  new UserController(db);
     private List<TicketType> ticketTypes;
     
     //Ticket handling stuff
@@ -249,10 +241,9 @@ public class EventView extends BaseView {
                                 .addComponent(lblTicketPrice))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addGap(338, 338, 338)
-                                .addComponent(lblQuantityLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spnQuantity, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblQuantityLeft, javax.swing.GroupLayout.Alignment.TRAILING))))))
                 .addGap(16, 16, 16))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -389,8 +380,6 @@ public class EventView extends BaseView {
     }//GEN-LAST:event_cmbTicketTypeMouseClicked
 
     public void myInitComponents() {  
-        eventController = new EventController(db);
-        ticketController = new TicketController(db);
     }
     
     /**

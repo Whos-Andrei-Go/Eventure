@@ -4,7 +4,6 @@
  */
 package views;
 
-import controllers.EventController;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,8 +24,6 @@ public class EventsView extends BaseView {
     /**
      * Creates new form DashboardView
      */
-    
-    private EventController controller;
     
     public EventsView() {
         initComponents();
@@ -130,6 +127,11 @@ public class EventsView extends BaseView {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    @Override
+    public void refreshData(){
+        loadEventCards();  // Load events and display them as cards
+    }
+    
     private void btnCreateEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateEventActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCreateEventActionPerformed
@@ -144,7 +146,7 @@ public class EventsView extends BaseView {
     }//GEN-LAST:event_btnCreateEventMouseClicked
 
     public void loadEventCards() {
-        List<Event> events = controller.getEvents();
+        List<Event> events = eventController.getEvents();
 
         if (events == null || events.isEmpty()) {
             System.out.println("No events to display.");
@@ -175,7 +177,6 @@ public class EventsView extends BaseView {
 
 
     public void myInitComponents() {  
-        controller = new EventController(db);
     }
     
     /**

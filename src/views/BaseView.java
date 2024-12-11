@@ -5,6 +5,7 @@
 package views;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import controllers.*;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import utility.Database;
@@ -25,6 +26,23 @@ public class BaseView extends javax.swing.JFrame {
         initComponents();
         applyLookAndFeel(); // Apply the FlatLaf theme
         addDBConnection(); // Initialize components in derived classes
+        initControllers();
+    }
+    
+    protected EventController eventController;
+    protected UserController userController;
+    protected TicketController ticketController;
+    protected CartController cartController;
+    
+    public void initControllers(){
+       eventController = new EventController(db);
+       userController = new UserController(db);
+       ticketController = new TicketController(db);
+       cartController = new CartController(db);
+    }
+    
+    public void refreshData(){
+        
     }
 
     /**

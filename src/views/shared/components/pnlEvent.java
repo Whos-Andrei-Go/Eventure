@@ -12,6 +12,7 @@ import models.TicketType;
 import views.EventView;
 import models.Event;
 import utility.Session;
+import views.BaseView;
 import views.OrganizerEventView;
 
 /**
@@ -95,8 +96,10 @@ public class pnlEvent extends javax.swing.JPanel {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
+        BaseView parentWindow = (BaseView) SwingUtilities.getWindowAncestor(this);
+        
         if (daEvent.getCreatorId() == Session.getCurrentUser().getId()){
-            OrganizerEventView organizerEventView = new OrganizerEventView(daEvent);  // Assuming EventView is your class
+            OrganizerEventView organizerEventView = new OrganizerEventView(daEvent, parentWindow);  // Assuming EventView is your class
             organizerEventView.setVisible(true);
         }
         else{
@@ -106,7 +109,6 @@ public class pnlEvent extends javax.swing.JPanel {
         
 
         // Dispose of the current frame (this is the original window)
-        Window parentWindow = SwingUtilities.getWindowAncestor(this);
         parentWindow.dispose();  // This will close the current window
     }//GEN-LAST:event_formMouseClicked
 

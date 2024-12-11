@@ -33,6 +33,10 @@ public class pnlEventHistory extends javax.swing.JPanel {
     public pnlEventHistory(Database db) {
         eventController = new EventController(db);
         initComponents();
+        refreshData();  // Load events and display them as cards
+    }
+    
+    public void refreshData(){
         loadEventHistory();  // Load events and display them as cards
     }
 

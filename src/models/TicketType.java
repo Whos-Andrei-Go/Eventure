@@ -31,6 +31,7 @@ public class TicketType {
     }
     
     public TicketType(String name, BigDecimal price, int quantity) {
+        this.id = -1; //So queries don't crash
         this.name = name;
         this.price = price;
         this.quantity = quantity;

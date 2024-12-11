@@ -23,6 +23,10 @@ public class Session {
         return currentUser;
     }
     
+    public static void clearCurrentUser() {
+        currentUser = null;  // Set the currentUser to null to clear the session
+    }
+    
     public static void logout(Window currentWindow){
         currentWindow.dispose();
         LoginView loginView = new LoginView();

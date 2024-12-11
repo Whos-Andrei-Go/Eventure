@@ -5,15 +5,14 @@
 package views;
 
 import views.shared.components.dlgAddTicketType;
-import controllers.EventController;
-import controllers.TicketController;
-import controllers.UserController;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +22,10 @@ import models.TicketType;
 import models.User;
 import raven.datetime.component.date.DatePicker;
 import raven.datetime.component.time.TimePicker;
+import utility.Database;
 import utility.Session;
 import views.*;
+import views.shared.components.dlgEditTicketType;
 import views.shared.components.pnlEvent;
 
 /**
@@ -37,31 +38,87 @@ public class OrganizerEventView extends BaseView {
      * Creates new form DashboardView
      */
     
-    private EventController eventController;
-    private TicketController ticketController;
-
-    private UserController userController;
-    
     //Ticket handling stuff
-    List<TicketType> createdTicketTypes = new ArrayList<>();
+    List<TicketType> ticketTypes = new ArrayList<>();
     private DefaultListModel<String> ticketListModel = new DefaultListModel<>();;
     
     private Event daEvent;
+    private BaseView parentView;
     
     public OrganizerEventView() {
         initComponents();
     }
     
-    public OrganizerEventView(Event event) {
+    public OrganizerEventView(Event event, BaseView parentView) {
         initComponents();
         
-        updateDetails(event);
         this.daEvent = event;
+        this.parentView = parentView;
+        
+        updateDetails(event);
+        initDatetimePickers(event);
+    }
+    
+    private void updateDetails(Event daEvent) {
+        hdrMain.setText(daEvent.getName());
+        txtEventName.setText(daEvent.getName());
+        txtEventLocation.setText(daEvent.getLocation());
+        frmTxtStartDate.setText(daEvent.getFormattedStartTime());
+        frmTxtEndDate.setText(daEvent.getFormattedEndTime());
+        txtDescription.setText(daEvent.getDescription());
+        
+        ticketListModel.clear();
+        
+        this.ticketTypes = ticketController.getTicketTypesByEventId(daEvent.getId());
+        for (TicketType ticket : ticketTypes) {
+            String formattedEntry = String.format(
+                    "%s - PHP %.2f - Quantity: %d",
+                    ticket.getName(),
+                    ticket.getPrice(),
+                    ticket.getQuantity()
+            );
+            ticketListModel.addElement(formattedEntry);
+        }
+    }
+    
+    private void initDatetimePickers(Event daEvent){
+        //Creates the DatePickers
+        DatePicker dpStartDate = new DatePicker();
+        dpStartDate.setEditor(frmTxtStartDate);
+        dpStartDate.setDateFormat("MM/dd/yyyy");
+        
+        DatePicker dpEndDate = new DatePicker();
+        dpEndDate.setEditor(frmTxtEndDate);
+        dpEndDate.setDateFormat("MM/dd/yyyy");
+        
+        //Creates the TimePickers
+        TimePicker tpStartTime = new TimePicker();
+        tpStartTime.setEditor(frmTxtStartTime);
+        tpStartTime.setColor(new Color(128, 0, 128));
+        
+        TimePicker tpEndTime = new TimePicker();
+        tpEndTime.setEditor(frmTxtEndTime);
+        tpEndTime.setColor(new Color(128, 0, 128));
+        
+        if (daEvent.getStartTimestamp() != null) {
+            java.sql.Timestamp startTimestamp = daEvent.getStartTimestamp();
+            LocalDate startDate = startTimestamp.toLocalDateTime().toLocalDate(); // Convert to LocalDate
+            dpStartDate.setSelectedDate(startDate);
+
+            LocalDateTime startDateTime = startTimestamp.toLocalDateTime(); // Convert to LocalDateTime
+            tpStartTime.setSelectedTime(startDateTime.toLocalTime()); // Set the time part
+        }
+
+        if (daEvent.getEndTimestamp() != null) {
+            java.sql.Timestamp endTimestamp = daEvent.getEndTimestamp();
+            LocalDate endDate = endTimestamp.toLocalDateTime().toLocalDate(); // Convert to LocalDate
+            dpEndDate.setSelectedDate(endDate);
+
+            LocalDateTime endDateTime = endTimestamp.toLocalDateTime(); // Convert to LocalDateTime
+            tpEndTime.setSelectedTime(endDateTime.toLocalTime()); // Set the time part
+        }
     }
 
-    private void updateDetails(Event daEvent){
-
-    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,7 +138,7 @@ public class OrganizerEventView extends BaseView {
         lblEventName1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JTextArea();
-        btnSubmit = new javax.swing.JButton();
+        btnSaveChanges = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         frmTxtStartDate = new javax.swing.JFormattedTextField();
         lblEventName2 = new javax.swing.JLabel();
@@ -98,6 +155,7 @@ public class OrganizerEventView extends BaseView {
         btnAddTicketType = new javax.swing.JButton();
         lblEventLocation = new javax.swing.JLabel();
         txtEventLocation = new javax.swing.JTextField();
+        lblDeleteEvent = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Events");
@@ -106,7 +164,7 @@ public class OrganizerEventView extends BaseView {
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
-        hdrMain.setText("CREATE EVENT");
+        hdrMain.setText("EVENT NAME");
         hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
@@ -131,18 +189,18 @@ public class OrganizerEventView extends BaseView {
         txtDescription.setRows(5);
         jScrollPane1.setViewportView(txtDescription);
 
-        btnSubmit.setBackground(new java.awt.Color(153, 0, 153));
-        btnSubmit.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
-        btnSubmit.setText("Submit");
-        btnSubmit.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnSaveChanges.setBackground(new java.awt.Color(153, 0, 153));
+        btnSaveChanges.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        btnSaveChanges.setForeground(new java.awt.Color(255, 255, 255));
+        btnSaveChanges.setText("Save Changes");
+        btnSaveChanges.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSubmitMouseClicked(evt);
+                btnSaveChangesMouseClicked(evt);
             }
         });
-        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveChanges.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitActionPerformed(evt);
+                btnSaveChangesActionPerformed(evt);
             }
         });
 
@@ -174,6 +232,11 @@ public class OrganizerEventView extends BaseView {
 
         frmTxtEndDate.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         frmTxtEndDate.setPreferredSize(new java.awt.Dimension(225, 30));
+        frmTxtEndDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                frmTxtEndDateActionPerformed(evt);
+            }
+        });
 
         lblStartTime.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         lblStartTime.setText("Event Start Time:");
@@ -192,6 +255,11 @@ public class OrganizerEventView extends BaseView {
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         listTicketType.setModel(ticketListModel);
+        listTicketType.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listTicketTypeMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(listTicketType);
 
         lblEndDate1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -225,6 +293,15 @@ public class OrganizerEventView extends BaseView {
             }
         });
 
+        lblDeleteEvent.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblDeleteEvent.setForeground(new java.awt.Color(204, 0, 51));
+        lblDeleteEvent.setText("Delete Event");
+        lblDeleteEvent.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblDeleteEventMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -232,52 +309,89 @@ public class OrganizerEventView extends BaseView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(txtEventName, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(hdrMain)
-                                .addComponent(txtEventLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblEventName2))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblEventName1)
-                    .addComponent(lblEventLocation))
-                .addGap(55, 55, 55)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblEndDate1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(frmTxtStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(frmTxtEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(hdrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblStartDate))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(0, 77, Short.MAX_VALUE)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblStartTime)
                             .addComponent(lblEndTime)
-                            .addComponent(frmTxtStartTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(frmTxtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(frmTxtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lblDeleteEvent)
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnSaveChanges, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblStartTime)
+                                    .addComponent(frmTxtStartTime, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))))
+                        .addGap(19, 19, 19))
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(btnAddTicketType)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(19, 19, 19))
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEventName1)
+                            .addComponent(lblEventLocation)
+                            .addComponent(lblEventName2)
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(txtEventName, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtEventLocation, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(39, 39, 39)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlMainLayout.createSequentialGroup()
+                                        .addComponent(lblEndDate1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnAddTicketType))
+                                    .addComponent(lblStartDate)
+                                    .addComponent(frmTxtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(frmTxtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 324, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(28, 28, 28)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblStartDate)
+                            .addComponent(lblStartTime))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(frmTxtStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(frmTxtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblEndDate)
+                            .addComponent(lblEndTime))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(frmTxtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(frmTxtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblEndDate1)
+                                    .addComponent(btnAddTicketType))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addComponent(lblDeleteEvent)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(12, Short.MAX_VALUE))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addComponent(lblEventName2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -286,45 +400,12 @@ public class OrganizerEventView extends BaseView {
                         .addComponent(lblEventLocation)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtEventLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(lblEventName1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator1)))
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblStartDate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(frmTxtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblStartTime)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(frmTxtStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblEndDate)
-                    .addComponent(lblEndTime))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(frmTxtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(frmTxtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(235, 235, 235))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblEndDate1)
-                            .addComponent(btnAddTicketType))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
         );
 
         scrlMain.setViewportView(pnlMain);
@@ -348,83 +429,56 @@ public class OrganizerEventView extends BaseView {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtEventNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventNameActionPerformed
+    private void txtEventLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventLocationActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtEventNameActionPerformed
+    }//GEN-LAST:event_txtEventLocationActionPerformed
 
-    private void btnSubmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSubmitMouseClicked
+    private void btnAddTicketTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTicketTypeActionPerformed
         // TODO add your handling code here:
-        // Gather input data
-        String eventName = txtEventName.getText();
-        String eventLocation = txtEventLocation.getText();
-        String eventDescription = txtDescription.getText();
-        String startDate = frmTxtStartDate.getText();
-        String endDate = frmTxtEndDate.getText();
-        String startTime = frmTxtStartTime.getText();
-        String endTime = frmTxtEndTime.getText();
+    }//GEN-LAST:event_btnAddTicketTypeActionPerformed
 
-        // Gather ticket types from the list
-        List<String> ticketTypes = new ArrayList<>();
-            Iterator<String> iterator = ticketListModel.elements().asIterator();
-            while (iterator.hasNext()) {
-                ticketTypes.add(iterator.next());
-            }
+    private void btnAddTicketTypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddTicketTypeMouseClicked
+        // TODO add your handling code here:
+        dlgAddTicketType dialog = new dlgAddTicketType(OrganizerEventView.this, ticketTypes);
+        dialog.setVisible(true);
 
-        // Create an Event object
-        Event event = new Event();
-        event.setName(eventName);
-        event.setLocation(eventLocation);
-        event.setDescription(eventDescription);
-        event.setStartTimestamp(startDate, startTime);
-        event.setEndTimestamp(endDate, endTime);
-        event.setCreatorId(Session.getCurrentUser().getId());
-        
-        // Use the controller to save the event
-        Event createdEvent  = eventController.createEvent(event); // Assuming createEvent returns a boolean
-
-        // Provide feedback to the user
-        if (createdEvent != null) {
-            // Now add ticket types to the TicketTypes table
-            boolean ticketSuccess = true;
-            
-            for(TicketType ticketType : createdTicketTypes){
-                TicketType ticket = new TicketType();
-
-                ticket.setEventId(createdEvent.getId());
-                ticket.setName(ticketType.getName());
-                ticket.setPrice(ticketType.getPrice());
-                ticket.setQuantity(ticketType.getQuantity());
-
-                ticketSuccess &= ticketController.createTicketType(ticket);
-            }
-            
-            // Provide feedback to the user
-            if (ticketSuccess) {
-                if (!"Organizer".equals(Session.getCurrentUser().getRole())){
-                    User updatedUser = Session.getCurrentUser();
-                    updatedUser.setRole("Organizer");
-                    
-                    userController.updateUser(updatedUser);
-                    Session.setCurrentUser(updatedUser);
-                }
-                
-                JOptionPane.showMessageDialog(this, "Event and ticket types created successfully!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Event created, but failed to add ticket types. Please try again.");
-            }
-
-            this.dispose(); // Close the dialog or navigate to another view
-            
-            EventsView eventsView = new EventsView();
-            eventsView.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to create event. Please try again.");
+        ticketListModel.clear();
+        for (TicketType ticket : ticketTypes) {
+            String formattedEntry = String.format(
+                "%s - PHP %.2f - Quantity: %d",
+                ticket.getName(),
+                ticket.getPrice(),
+                ticket.getQuantity()
+            );
+            ticketListModel.addElement(formattedEntry);
         }
-    }//GEN-LAST:event_btnSubmitMouseClicked
+    }//GEN-LAST:event_btnAddTicketTypeMouseClicked
 
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+    private void listTicketTypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listTicketTypeMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitActionPerformed
+        int index = listTicketType.locationToIndex(evt.getPoint());
+        if (index != -1) {
+            TicketType selectedTicket = ticketTypes.get(index);  // Get the TicketType object
+
+            dlgEditTicketType dialog = new dlgEditTicketType(OrganizerEventView.this, selectedTicket);
+            dialog.setVisible(true);
+
+            ticketListModel.clear();
+            for (TicketType ticket : ticketTypes) {
+                String formattedEntry = String.format(
+                    "%s - PHP %.2f - Quantity: %d",
+                    ticket.getName(),
+                    ticket.getPrice(),
+                    ticket.getQuantity()
+                );
+                ticketListModel.addElement(formattedEntry);
+            }
+        }
+    }//GEN-LAST:event_listTicketTypeMouseClicked
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
         // TODO add your handling code here:
@@ -435,39 +489,109 @@ public class OrganizerEventView extends BaseView {
         eventsView.setVisible(true);
     }//GEN-LAST:event_btnBackMouseClicked
 
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+    private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnBackActionPerformed
+    }//GEN-LAST:event_btnSaveChangesActionPerformed
 
-    private void btnAddTicketTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTicketTypeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAddTicketTypeActionPerformed
+    private void btnSaveChangesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveChangesMouseClicked
+        // Gather input data
+        String eventName = txtEventName.getText();
+        String eventLocation = txtEventLocation.getText();
+        String eventDescription = txtDescription.getText();
+        String startDate = frmTxtStartDate.getText();
+        String endDate = frmTxtEndDate.getText();
+        String startTime = frmTxtStartTime.getText();
+        String endTime = frmTxtEndTime.getText();
 
-    private void btnAddTicketTypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddTicketTypeMouseClicked
-        // TODO add your handling code here:
-        dlgAddTicketType dialog = new dlgAddTicketType(OrganizerEventView.this, createdTicketTypes);
-        dialog.setVisible(true);
-        
-        ticketListModel.clear();
-        for (TicketType ticket : createdTicketTypes) {
-            String formattedEntry = String.format(
-                    "%s - PHP %.2f - Quantity: %d",
-                    ticket.getName(),
-                    ticket.getPrice(),
-                    ticket.getQuantity()
-            );
-            ticketListModel.addElement(formattedEntry);
+        // Create or update the Event object
+        Event event = new Event();
+        event.setId(daEvent.getId());
+        event.setName(eventName);
+        event.setLocation(eventLocation);
+        event.setDescription(eventDescription);
+        event.setStartTimestamp(startDate, startTime);
+        event.setEndTimestamp(endDate, endTime);
+        event.setCreatorId(Session.getCurrentUser().getId());
+
+        // Check if it's an existing event (i.e., if it has an ID)
+        Event updatedEvent = eventController.updateEvent(event);
+
+        // Provide feedback to the user
+        if (updatedEvent != null) {
+            boolean ticketSuccess = true;
+
+            for (TicketType daTicket : ticketTypes) {
+                TicketType existingTicketType = ticketController.getTicketTypeById(daTicket.getId());
+                
+                TicketType ticket = new TicketType();
+                ticket.setEventId(updatedEvent.getId());
+                ticket.setName(daTicket.getName());
+                ticket.setPrice(daTicket.getPrice());
+                ticket.setQuantity(daTicket.getQuantity());
+
+                // Update the ticket types, or create new ones if needed
+                if (existingTicketType != null) {
+                    System.out.println("IT'S FUCKING NULL!!!");
+                    ticketSuccess &= ticketController.createTicketType(ticket); // Update existing ticket
+                }
+                else{
+                    ticket.setId(daTicket.getId());
+                    ticketSuccess &= ticketController.updateTicketType(ticket); // Update existing ticket
+                }
+                
+            }
+
+            if (ticketSuccess) {
+                JOptionPane.showMessageDialog(this, "Event and ticket types updated successfully!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Event updated, but failed to add/update ticket types. Please try again.");
+            }
+
+            this.dispose(); // Close the dialog or navigate to another view
+
+            parentView.refreshData();
+            parentView.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update event. Please try again.");
         }
-    }//GEN-LAST:event_btnAddTicketTypeMouseClicked
+    }//GEN-LAST:event_btnSaveChangesMouseClicked
 
-    private void txtEventLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventLocationActionPerformed
+    private void txtEventNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtEventLocationActionPerformed
+    }//GEN-LAST:event_txtEventNameActionPerformed
 
-    public void myInitComponents() {  
-        eventController = new EventController(db);
-        ticketController = new TicketController(db);
-        
+    private void frmTxtEndDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frmTxtEndDateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_frmTxtEndDateActionPerformed
+
+    private void lblDeleteEventMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblDeleteEventMouseClicked
+        // TODO add your handling code here:
+        // Prompt the user for confirmation before deleting the account
+        int confirmation = JOptionPane.showConfirmDialog(this,
+            "Are you sure you want to delete this event? This will also delete all tickets related to the event. This action cannot be undone.",
+            "Confirm Deletion",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Proceed to delete the user
+            boolean deletionSuccess = eventController.deleteEvent(daEvent.getId());
+
+            if (deletionSuccess) {
+                JOptionPane.showMessageDialog(this, "Your event has been successfully deleted.");
+                // Log the user out or close the application as needed
+                this.dispose();
+                if (parentView != null) {
+                    parentView.refreshData();
+                    parentView.setVisible(true);  // Make the parent window visible again
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "There was an error deleting your event. Please try again.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_lblDeleteEventMouseClicked
+
+    public void myInitComponents() {          
         //Creates the DatePickers
         DatePicker dpStartDate = new DatePicker();
         dpStartDate.setEditor(frmTxtStartDate);
@@ -540,7 +664,7 @@ public class OrganizerEventView extends BaseView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddTicketType;
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnSaveChanges;
     private javax.swing.JFormattedTextField frmTxtEndDate;
     private javax.swing.JFormattedTextField frmTxtEndTime;
     private javax.swing.JFormattedTextField frmTxtStartDate;
@@ -549,6 +673,7 @@ public class OrganizerEventView extends BaseView {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblDeleteEvent;
     private javax.swing.JLabel lblEndDate;
     private javax.swing.JLabel lblEndDate1;
     private javax.swing.JLabel lblEndTime;
