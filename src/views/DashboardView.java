@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.swing.*;
 import models.Event;
@@ -28,8 +30,31 @@ public class DashboardView extends BaseView {
     
     public DashboardView() {
         initComponents();
-
+        startClock();
         refreshData();
+    }
+    
+    public void startClock(){
+        Thread ct = new Thread(() -> {
+            try {
+                while (true) {
+                    Calendar cal = new GregorianCalendar();
+                    int hour = cal.get(Calendar.HOUR_OF_DAY);
+                    int minute = cal.get(Calendar.MINUTE);
+                    int second = cal.get(Calendar.SECOND);
+
+                    SwingUtilities.invokeLater(() -> {
+                        lblClock.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+                    });
+
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        
+        ct.start();
     }
     
     @Override
@@ -75,6 +100,7 @@ public class DashboardView extends BaseView {
         hdrYourEvents = new javax.swing.JLabel();
         scrlYourEventCards = new javax.swing.JScrollPane();
         pnlYourEventCards = new javax.swing.JPanel();
+        lblClock = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Dashboard");
@@ -156,6 +182,9 @@ public class DashboardView extends BaseView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        lblClock.setFont(new java.awt.Font("Riffic Free Medium", 0, 48)); // NOI18N
+        lblClock.setText("00:00:00");
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -166,6 +195,10 @@ public class DashboardView extends BaseView {
                     .addComponent(pnlUpcoming, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlYourEvents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblClock)
+                .addGap(48, 48, 48))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addGap(16, 16, 16)
@@ -175,11 +208,13 @@ public class DashboardView extends BaseView {
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(112, 112, 112)
+                .addGap(30, 30, 30)
+                .addComponent(lblClock)
+                .addGap(56, 56, 56)
                 .addComponent(pnlUpcoming, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pnlYourEvents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(362, Short.MAX_VALUE))
+                .addContainerGap(327, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addGap(30, 30, 30)
@@ -322,6 +357,7 @@ public class DashboardView extends BaseView {
     private javax.swing.JLabel hdrMain;
     private javax.swing.JLabel hdrUpcoming;
     private javax.swing.JLabel hdrYourEvents;
+    private javax.swing.JLabel lblClock;
     private javax.swing.JPanel pnlMain;
     private views.shared.components.pnlNavBar pnlNavBar1;
     private javax.swing.JPanel pnlUpcoming;

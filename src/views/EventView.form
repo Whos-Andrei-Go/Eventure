@@ -113,8 +113,8 @@
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                          <Component id="hdrMain" min="-2" pref="899" max="-2" attributes="0"/>
-                          <EmptySpace pref="331" max="32767" attributes="0"/>
+                          <Component id="hdrMain" min="-2" pref="961" max="-2" attributes="0"/>
+                          <EmptySpace pref="269" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
@@ -335,7 +335,7 @@
                 <Property name="text" type="java.lang.String" value="EVENT NAME"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
+                    <EmptyBorder bottom="20" left="10" right="20" top="20"/>
                   </Border>
                 </Property>
                 <Property name="horizontalTextPosition" type="int" value="2"/>

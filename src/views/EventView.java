@@ -4,6 +4,7 @@
  */
 package views;
 
+import controllers.CartController;
 import views.shared.components.dlgAddTicketType;
 import java.awt.*;
 import java.awt.Color;
@@ -12,10 +13,13 @@ import java.awt.Font;
 import java.awt.Image;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.swing.*;
 import models.Event;
+import models.Ticket;
 import models.TicketType;
 import models.User;
 import raven.datetime.component.date.DatePicker;
@@ -33,7 +37,9 @@ public class EventView extends BaseView {
     /**
      * Creates new form DashboardView
      */
+    private Map<Integer, String> ticketTypeMap = new HashMap<>();
     private List<TicketType> ticketTypes;
+    private BaseView parentView;
     
     //Ticket handling stuff
     
@@ -41,9 +47,10 @@ public class EventView extends BaseView {
         initComponents();
     }
     
-    public EventView(Event event) {
+    public EventView(Event event, BaseView parentView) {
         initComponents();
         
+        this.parentView = parentView;
         updateDetails(event);
     }
 
@@ -61,6 +68,7 @@ public class EventView extends BaseView {
         ticketTypes = ticketController.getTicketTypesByEventId(daEvent.getId());
 
         for (TicketType ticket : ticketTypes) {
+            ticketTypeMap.put(ticket.getId(), ticket.getName());
             cmbTicketType.addItem(ticket.getName()); // Add the name of each ticket type
         }
     }
@@ -167,7 +175,7 @@ public class EventView extends BaseView {
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
         hdrMain.setText("EVENT NAME");
-        hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         cmbTicketType.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -248,8 +256,8 @@ public class EventView extends BaseView {
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addGap(10, 10, 10)
-                    .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 899, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(331, Short.MAX_VALUE)))
+                    .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(269, Short.MAX_VALUE)))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                     .addContainerGap(644, Short.MAX_VALUE)
@@ -333,10 +341,10 @@ public class EventView extends BaseView {
     private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
         // TODO add your handling code here:
         this.dispose();
-        EventsView eventsView = new EventsView();
+        parentView.refreshData();
         // Optionally pass the database connection or user info if needed
         //DashboardController dashboardController = new DashboardController(dashboardView, dbConnection);
-        eventsView.setVisible(true);
+        parentView.setVisible(true);
     }//GEN-LAST:event_btnBackMouseClicked
 
     private void btnAddToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddToCartActionPerformed
@@ -345,8 +353,35 @@ public class EventView extends BaseView {
 
     private void btnAddToCartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddToCartMouseClicked
         // TODO add your handling code here:
-        // Gather input data
+        int selectedIndex = cmbTicketType.getSelectedIndex();
 
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a valid ticket type.");
+            return;  // Exit if no ticket type is selected
+        }
+
+        // Get the ID using the selected index
+        Integer selectedTicketTypeId = (Integer) ticketTypeMap.keySet().toArray()[selectedIndex];
+
+        // Retrieve the selected quantity from the Spinner
+        int quantity = (Integer) spnQuantity.getValue();  // Assuming the Spinner is for quantity
+
+        if (quantity <= 0) {
+            JOptionPane.showMessageDialog(this, "Please select a quantity greater than 0.");
+            return;  // Exit if quantity is not valid
+        }
+
+        // Create the tickets and add them to the cart
+        CartController cartController = new CartController(db);
+        boolean added = cartController.addTicketToCart(selectedTicketTypeId, quantity);
+
+        if (!added) {
+            JOptionPane.showMessageDialog(this, "Failed to add ticket to cart.");
+            return;  // Exit if any ticket fails to be added
+        }
+
+        // Provide feedback to the user
+        JOptionPane.showMessageDialog(this, "Ticket(s) added to cart successfully!");
     }//GEN-LAST:event_btnAddToCartMouseClicked
 
     private void cmbTicketTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTicketTypeActionPerformed

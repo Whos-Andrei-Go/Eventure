@@ -8,6 +8,7 @@ package models;
  *
  * @author andre
  */
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Ticket {
@@ -23,6 +24,10 @@ public class Ticket {
     public Ticket() {
     }
 
+    public Ticket(int ticketTypeId) {
+        this.ticketTypeId = ticketTypeId;
+    }
+    
     // Constructor with parameters
     public Ticket(int id, int userId, int ticketTypeId, Date purchaseDate, String status, String qrCode) {
         this.id = id;

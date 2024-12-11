@@ -483,10 +483,10 @@ public class OrganizerEventView extends BaseView {
     private void btnBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseClicked
         // TODO add your handling code here:
         this.dispose();
-        EventsView eventsView = new EventsView();
+        parentView.refreshData();
         // Optionally pass the database connection or user info if needed
         //DashboardController dashboardController = new DashboardController(dashboardView, dbConnection);
-        eventsView.setVisible(true);
+        parentView.setVisible(true);
     }//GEN-LAST:event_btnBackMouseClicked
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
@@ -530,8 +530,7 @@ public class OrganizerEventView extends BaseView {
                 ticket.setQuantity(daTicket.getQuantity());
 
                 // Update the ticket types, or create new ones if needed
-                if (existingTicketType != null) {
-                    System.out.println("IT'S FUCKING NULL!!!");
+                if (existingTicketType == null) {
                     ticketSuccess &= ticketController.createTicketType(ticket); // Update existing ticket
                 }
                 else{

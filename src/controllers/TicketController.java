@@ -70,7 +70,7 @@ public class TicketController {
         }
     }
 
-    public TicketType getTicketTypeById(int ticketTypeId) {
+    public TicketType getTicketTypeById(int ticketTypeId) {        
         TicketType ticketType = null;
         String sql = "SELECT * FROM TicketTypes WHERE id = ?";
 
@@ -94,6 +94,31 @@ public class TicketController {
 
         return ticketType;
     }
+    
+    public TicketType getTicketTypeByName(String ticketTypeName) {
+        TicketType ticketType = null;
+        String sql = "SELECT * FROM TicketTypes WHERE name = ?";
+
+        try (Connection conn = db.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, ticketTypeName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    ticketType = new TicketType();
+                    ticketType.setId(rs.getInt("id"));
+                    ticketType.setName(rs.getString("name"));
+                    ticketType.setPrice(rs.getBigDecimal("price"));
+                    ticketType.setQuantity(rs.getInt("quantity"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ticketType;
+    }
+
 
     public List<TicketType> getTicketTypesByEventId(int eventId) {
         List<TicketType> ticketTypes = new ArrayList<>();

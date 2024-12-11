@@ -6,11 +6,21 @@ package views;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.*;
+import models.Cart;
 import models.Event;
+import models.Ticket;
+import models.TicketType;
 import views.*;
+import views.shared.components.pnlCheckoutItem;
 import views.shared.components.pnlEvent;
 
 /**
@@ -25,7 +35,59 @@ public class CheckoutView extends BaseView {
     
     public CheckoutView() {
         initComponents();
+        displayTickets();
     }
+    
+    private void displayTickets() {
+        // Retrieve the tickets from the cart
+        BigDecimal cartTotal = new BigDecimal("0.00");
+        
+        Map<Integer, Integer> cartTickets = Cart.getInstance().getTickets();
+        pnlCart.removeAll(); // Clear the panel before adding new ticket components
+    
+        // Check if there are tickets in the cart
+        if (cartTickets.isEmpty()) {
+            
+        } else {
+            int row = 0;
+            
+            // Loop through the grouped tickets and display one panel per ticket type
+            for (Map.Entry<Integer, Integer> entry : cartTickets.entrySet()) {
+                int ticketTypeId = entry.getKey();
+                int totalQuantity = entry.getValue();
+
+                // Retrieve the ticket type details
+                TicketType ticketType = ticketController.getTicketTypeById(ticketTypeId);
+
+                if (ticketType != null) {
+                    // Calculate the total price for this ticket type
+                    BigDecimal totalPrice = ticketType.getPrice().multiply(BigDecimal.valueOf(totalQuantity));
+                    cartTotal = cartTotal.add(totalPrice);
+
+                    // Create and configure the pnlCheckoutItem for this ticket type
+                    pnlCheckoutItem ticketPanel = new pnlCheckoutItem(
+                            ticketType.getName(),
+                            ticketType.getPrice(),
+                            totalQuantity
+                    );
+                    
+                    ticketPanel.setPreferredSize(new Dimension(ticketPanel.getPreferredSize().width, ticketPanel.getPreferredSize().height));
+
+                    // Add the ticket panel to the cart panel
+                    pnlCart.add(ticketPanel);
+                    pnlCart.add(Box.createVerticalStrut(10));
+                }
+            }
+        }
+
+        pnlCart.revalidate();  // Revalidate the layout to ensure the components are displayed
+        pnlCart.repaint();  // Repaint the panel
+        
+        //set txtTotal in pnlCheckoutDetails2 to cartTotal
+        System.out.println("TOTAL PRICE IS" + cartTotal.toString());
+        pnlCheckoutDetails2.getLblTotalPrice().setText(cartTotal.toString());
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,18 +102,25 @@ public class CheckoutView extends BaseView {
         scrlMain = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
         hdrMain = new javax.swing.JLabel();
+        scrlCart = new javax.swing.JScrollPane();
+        pnlCart = new javax.swing.JPanel();
+        pnlCheckoutDetails2 = new views.shared.components.pnlCheckoutDetails();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Dashboard");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlMain.setPreferredSize(new java.awt.Dimension(1280, 720));
+        pnlMain.setPreferredSize(new java.awt.Dimension(1280, 920));
 
         hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
         hdrMain.setText("CHECKOUT");
         hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        pnlCart.setBackground(new java.awt.Color(155, 0, 155));
+        pnlCart.setPreferredSize(new java.awt.Dimension(724, 434));
+        scrlCart.setViewportView(pnlCart);
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
@@ -60,14 +129,24 @@ public class CheckoutView extends BaseView {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addComponent(hdrMain)
-                .addContainerGap(833, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addComponent(scrlCart, javax.swing.GroupLayout.PREFERRED_SIZE, 699, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(pnlCheckoutDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(581, Short.MAX_VALUE))
+                .addGap(51, 51, 51)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrlCart, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlCheckoutDetails2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         scrlMain.setViewportView(pnlMain);
@@ -97,8 +176,11 @@ public class CheckoutView extends BaseView {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel hdrMain;
+    private javax.swing.JPanel pnlCart;
+    private views.shared.components.pnlCheckoutDetails pnlCheckoutDetails2;
     private javax.swing.JPanel pnlMain;
     private views.shared.components.pnlNavBar pnlNavBar1;
+    private javax.swing.JScrollPane scrlCart;
     private javax.swing.JScrollPane scrlMain;
     // End of variables declaration//GEN-END:variables
 }

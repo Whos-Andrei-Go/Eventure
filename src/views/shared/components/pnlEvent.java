@@ -48,8 +48,9 @@ public class pnlEvent extends javax.swing.JPanel {
         this.endTime = daEvent.getFormattedEndTime();
         
         this.lblName.setText(name);
-        this.lblDescription.setText(description);
-        this.lblDate.setText("Start: " + startTime + " - End: " + endTime);
+        this.lblLocation.setText(location);
+        this.lblStartDate.setText("Start: " + startTime);
+        this.lblEndDate.setText("End: " + endTime);
     }
 
     /**
@@ -62,8 +63,9 @@ public class pnlEvent extends javax.swing.JPanel {
     private void initComponents() {
 
         lblName = new javax.swing.JLabel();
-        lblDescription = new javax.swing.JLabel();
-        lblDate = new javax.swing.JLabel();
+        lblLocation = new javax.swing.JLabel();
+        lblStartDate = new javax.swing.JLabel();
+        lblEndDate = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(128, 0, 128));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -76,22 +78,47 @@ public class pnlEvent extends javax.swing.JPanel {
                 formMouseClicked(evt);
             }
         });
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         lblName.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lblName.setForeground(new java.awt.Color(255, 255, 255));
         lblName.setText("Event Name");
-        add(lblName);
 
-        lblDescription.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblDescription.setForeground(new java.awt.Color(255, 255, 255));
-        lblDescription.setText("Event Description");
-        add(lblDescription);
+        lblLocation.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lblLocation.setForeground(new java.awt.Color(255, 255, 255));
+        lblLocation.setText("Event Description");
 
-        lblDate.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        lblDate.setForeground(new java.awt.Color(255, 255, 255));
-        lblDate.setText("Event Date");
-        add(lblDate);
+        lblStartDate.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblStartDate.setForeground(new java.awt.Color(255, 255, 255));
+        lblStartDate.setText("Event Start Date");
+
+        lblEndDate.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblEndDate.setForeground(new java.awt.Color(255, 255, 255));
+        lblEndDate.setText("Event End Date");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblStartDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblLocation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblName, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                    .addComponent(lblEndDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblName)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblLocation)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblStartDate)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblEndDate)
+                .addContainerGap())
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
@@ -103,7 +130,7 @@ public class pnlEvent extends javax.swing.JPanel {
             organizerEventView.setVisible(true);
         }
         else{
-            EventView eventView = new EventView(daEvent);  // Assuming EventView is your class
+            EventView eventView = new EventView(daEvent, parentWindow);  // Assuming EventView is your class
             eventView.setVisible(true);
         }
         
@@ -114,8 +141,9 @@ public class pnlEvent extends javax.swing.JPanel {
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblDate;
-    private javax.swing.JLabel lblDescription;
+    private javax.swing.JLabel lblEndDate;
+    private javax.swing.JLabel lblLocation;
     private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblStartDate;
     // End of variables declaration//GEN-END:variables
 }
