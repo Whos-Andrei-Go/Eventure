@@ -4,10 +4,15 @@
  */
 package views.shared.components;
 
-import java.awt.*;
+
+import java.awt.Window;
 import javax.swing.*;
 import javax.swing.border.*;
 import models.TicketType;
+import views.EventView;
+import models.Event;
+import utility.Session;
+import views.OrganizerEventView;
 
 /**
  *
@@ -24,18 +29,22 @@ public class pnlEvent extends javax.swing.JPanel {
     private String startTime;
     private String endTime;
     
+    private Event daEvent;
+    
     public pnlEvent() {
         initComponents();
     }
     
-     public pnlEvent(String name, String location, String description, String startTime, String endTime) {
+    public pnlEvent(Event daEvent) {
+         this.daEvent = daEvent;
+          
         initComponents();
         
-        this.name = name;
-        this.location = location;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.name = daEvent.getName();
+        this.location = daEvent.getLocation();
+        this.description = daEvent.getDescription();
+        this.startTime = daEvent.getFormattedStartTime();
+        this.endTime = daEvent.getFormattedEndTime();
         
         this.lblName.setText(name);
         this.lblDescription.setText(description);
@@ -86,21 +95,21 @@ public class pnlEvent extends javax.swing.JPanel {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
-        showEventOverlay();
+        if (daEvent.getCreatorId() == Session.getCurrentUser().getId()){
+            OrganizerEventView organizerEventView = new OrganizerEventView(daEvent);  // Assuming EventView is your class
+            organizerEventView.setVisible(true);
+        }
+        else{
+            EventView eventView = new EventView(daEvent);  // Assuming EventView is your class
+            eventView.setVisible(true);
+        }
+        
+
+        // Dispose of the current frame (this is the original window)
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        parentWindow.dispose();  // This will close the current window
     }//GEN-LAST:event_formMouseClicked
 
-    private void showEventOverlay() {
-        // Create and show the event details dialog
-        dlgEventDetails dialog = new dlgEventDetails(
-            (Frame) SwingUtilities.getWindowAncestor(this), // Parent frame
-            name,
-            location,
-            description,
-            startTime,
-            endTime
-        );
-        dialog.setVisible(true); // Show the dialog
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblDate;

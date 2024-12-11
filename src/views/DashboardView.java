@@ -8,6 +8,8 @@ import controllers.EventController;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.*;
 import models.Event;
@@ -223,7 +225,16 @@ public class DashboardView extends BaseView {
         
         for (x = 0; x < events.size(); x++) {
             Event event = events.get(x);
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+            
+            Timestamp eventTimestamp = event.getStartTimestamp();
+            LocalDateTime eventStartTime = eventTimestamp.toLocalDateTime();
+            LocalDateTime currentTime = LocalDateTime.now();
+    
+            if (eventStartTime.isBefore(currentTime)){
+                continue;
+            }
+            
+            pnlEvent eventPanel = new pnlEvent(event);
             eventPanel.setPreferredSize(new Dimension(250, 250));
 
             pnlUpcomingCards.add(eventPanel);
@@ -257,7 +268,7 @@ public class DashboardView extends BaseView {
                 continue;
             }
             
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+            pnlEvent eventPanel = new pnlEvent(event);
 
             eventPanel.setPreferredSize(new Dimension(250, 250));
             pnlYourEventCards.add(eventPanel);

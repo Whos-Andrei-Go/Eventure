@@ -13,19 +13,27 @@ import java.math.BigDecimal;
 public class TicketType {
     private int id;                // Assuming id is an integer
     private int eventId;           // Assuming event_id is an integer
-    private String ticketName;      // Assuming ticket_name is a string
-    private BigDecimal ticketPrice; // Assuming ticket_price is a decimal
+    private String name;      // Assuming ticket_name is a string
+    private BigDecimal price; // Assuming ticket_price is a decimal
+    private int quantity;           // Assuming event_id is an integer
 
     // Constructor
     public TicketType(){
         
     }
     
-    public TicketType(int id, int eventId, String ticketName, BigDecimal ticketPrice) {
+    public TicketType(int id, int eventId, String name, BigDecimal price, int quantity) {
         this.id = id;
         this.eventId = eventId;
-        this.ticketName = ticketName;
-        this.ticketPrice = ticketPrice;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+    
+    public TicketType(String name, BigDecimal price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
     }
 
     // Getters and Setters
@@ -45,20 +53,28 @@ public class TicketType {
         this.eventId = eventId;
     }
 
-    public String getTicketName() {
-        return ticketName;
+    public String getName() {
+        return name;
     }
 
-    public void setTicketName(String ticketName) {
-        this.ticketName = ticketName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public BigDecimal getTicketPrice() {
-        return ticketPrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setTicketPrice(BigDecimal ticketPrice) {
-        this.ticketPrice = ticketPrice;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    
+     public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -66,8 +82,9 @@ public class TicketType {
         return "TicketType{" +
                 "id=" + id +
                 ", eventId=" + eventId +
-                ", ticketName='" + ticketName + '\'' +
-                ", ticketPrice=" + ticketPrice +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
                 '}';
     }
 }

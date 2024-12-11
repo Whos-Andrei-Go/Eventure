@@ -39,8 +39,12 @@ public class CreateEventView extends BaseView {
     
     private EventController eventController;
     private TicketController ticketController;
-    private DefaultListModel<String> ticketListModel;
+
     private UserController userController;
+    
+    //Ticket handling stuff
+    List<TicketType> createdTicketTypes = new ArrayList<>();
+    private DefaultListModel<String> ticketListModel;
     
     public CreateEventView() {
         userController =  new UserController(db);
@@ -372,25 +376,18 @@ public class CreateEventView extends BaseView {
         if (createdEvent != null) {
             // Now add ticket types to the TicketTypes table
             boolean ticketSuccess = true;
-            for (String ticketType : ticketTypes) {
+            
+            for(TicketType ticketType : createdTicketTypes){
                 TicketType ticket = new TicketType();
-                String[] parts = ticketType.split(" - ");
 
-                if (parts.length == 2) {
-                    String ticketName = parts[0].trim();
-                    String pricePart = parts[1].trim();
-                    String priceString = pricePart.replaceAll("[^0-9.]", "");
-                    BigDecimal ticketPrice = new BigDecimal(priceString.isEmpty() ? "0.00" : priceString);
+                ticket.setEventId(createdEvent.getId());
+                ticket.setName(ticketType.getName());
+                ticket.setPrice(ticketType.getPrice());
+                ticket.setQuantity(ticketType.getQuantity());
 
-                    ticket.setEventId(createdEvent.getId());
-                    ticket.setTicketName(ticketName);
-                    ticket.setTicketPrice(ticketPrice);
-
-                    ticketSuccess &= ticketController.createTicketType(ticket);
-                }
+                ticketSuccess &= ticketController.createTicketType(ticket);
             }
-
-
+            
             // Provide feedback to the user
             if (ticketSuccess) {
                 if (!"Organizer".equals(Session.getCurrentUser().getRole())){
@@ -438,8 +435,19 @@ public class CreateEventView extends BaseView {
 
     private void btnAddTicketTypeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddTicketTypeMouseClicked
         // TODO add your handling code here:
-        dlgAddTicketType dialog = new dlgAddTicketType(CreateEventView.this, ticketListModel);
+        dlgAddTicketType dialog = new dlgAddTicketType(CreateEventView.this, createdTicketTypes);
         dialog.setVisible(true);
+        
+        ticketListModel.clear();
+        for (TicketType ticket : createdTicketTypes) {
+            String formattedEntry = String.format(
+                    "%s - PHP %.2f - Quantity: %d",
+                    ticket.getName(),
+                    ticket.getPrice(),
+                    ticket.getQuantity()
+            );
+            ticketListModel.addElement(formattedEntry);
+        }
     }//GEN-LAST:event_btnAddTicketTypeMouseClicked
 
     private void txtEventLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEventLocationActionPerformed

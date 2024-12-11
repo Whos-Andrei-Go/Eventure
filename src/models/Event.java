@@ -44,10 +44,10 @@ public class Event {
     public int getId() { 
         return id; 
     }
+    
     public int getCreatorId() { 
         return creatorId; 
     }
-    
     
     public String getName() { 
         return name; 

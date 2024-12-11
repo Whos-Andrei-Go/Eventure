@@ -4,67 +4,94 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.List;
+import models.TicketType;
 
 public class dlgAddTicketType extends JDialog {
     private JTextField txtTicketName;
     private JTextField txtTicketPrice;
+    private JTextField txtTicketQuantity;
     private JButton btnAdd;
-    private DefaultListModel<String> ticketListModel;
+    private List<TicketType> ticketTypes;
 
-    public dlgAddTicketType(Frame parent, DefaultListModel<String> ticketListModel) {
+    public dlgAddTicketType(Frame parent, List<TicketType> ticketTypes) {
         super(parent, "Add Ticket Type", true);
-        this.ticketListModel = ticketListModel;
+        this.ticketTypes = ticketTypes;
 
         // Initialize components
         txtTicketName = new JTextField(15);
         txtTicketPrice = new JTextField(15);
+        txtTicketQuantity = new JTextField(15);
         btnAdd = new JButton("Add");
 
         // Set up layout with GridBagLayout for better control over padding
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Add padding (top, left, bottom, right)
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Add components with padding
-        gbc.gridx = 0; // Column 0
-        gbc.gridy = 0; // Row 0
-        gbc.anchor = GridBagConstraints.EAST; // Align label to the east (right)
+        // Add Ticket Name label and field
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
         add(new JLabel("Ticket Name:"), gbc);
 
-        gbc.gridx = 1; // Column 1
-        gbc.gridy = 0; // Row 0
-        gbc.anchor = GridBagConstraints.WEST; // Align text field to the west (left)
+        gbc.gridx = 1;
         add(txtTicketName, gbc);
 
-        gbc.gridx = 0; // Column 0
-        gbc.gridy = 1; // Row 1
-        gbc.anchor = GridBagConstraints.EAST; // Align label to the east (right)
+        // Add Ticket Price label and field
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         add(new JLabel("Ticket Price:"), gbc);
 
-        gbc.gridx = 1; // Column 1
-        gbc.gridy = 1; // Row 1
-        gbc.anchor = GridBagConstraints.WEST; // Align text field to the west (left)
+        gbc.gridx = 1;
         add(txtTicketPrice, gbc);
 
-        gbc.gridx = 0; // Column 0
-        gbc.gridy = 2; // Row 2
-        gbc.gridwidth = 2; // Span across two columns
-        gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        // Add Ticket Quantity label and field
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(new JLabel("Ticket Quantity:"), gbc);
+
+        gbc.gridx = 1;
+        add(txtTicketQuantity, gbc);
+
+        // Add Add button
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(btnAdd, gbc);
 
-        // Add action listener for the Add button
+        // Add action listener for Add button
         btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String ticketName = txtTicketName.getText();
                 String ticketPrice = txtTicketPrice.getText();
-                if (!ticketName.isEmpty() && !ticketPrice.isEmpty()) {
-                    ticketListModel.addElement(ticketName + " - PHP " + ticketPrice);
-                    txtTicketName.setText("");
-                    txtTicketPrice.setText("");
-                    dispose(); // Close the dialog
+                String ticketQuantity = txtTicketQuantity.getText();
+
+                if (!ticketName.isEmpty() && !ticketPrice.isEmpty() && !ticketQuantity.isEmpty()) {
+                    try {
+                        BigDecimal price = new BigDecimal(ticketPrice);
+                        int quantity = Integer.parseInt(ticketQuantity);
+
+                        // Create new TicketType object and add it to the list
+                        TicketType ticket = new TicketType(ticketName, price, quantity);
+                        ticketTypes.add(ticket);
+
+                        // Clear input fields
+                        txtTicketName.setText("");
+                        txtTicketPrice.setText("");
+                        txtTicketQuantity.setText("");
+
+                        dispose(); // Close the dialog
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(dlgAddTicketType.this,
+                                "Please enter a valid price and quantity.");
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(dlgAddTicketType.this, "Please enter both ticket name and price.");
+                    JOptionPane.showMessageDialog(dlgAddTicketType.this,
+                            "Please enter all ticket details.");
                 }
             }
         });

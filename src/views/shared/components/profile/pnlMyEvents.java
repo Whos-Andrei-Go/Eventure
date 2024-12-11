@@ -53,12 +53,12 @@ public class pnlMyEvents extends javax.swing.JPanel {
                 continue;
             }
             
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+            pnlEvent eventPanel = new pnlEvent(event);
 
             eventPanel.setPreferredSize(new Dimension(250, 250));
             pnlCards.add(eventPanel);
             
-            if (x < events.size() - 1 && (x - 3) % 4 != 0) {
+            if (x < events.size() - 1) {
                 pnlCards.add(Box.createHorizontalStrut(53));
             }
         }

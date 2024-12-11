@@ -56,11 +56,11 @@ public class pnlEventHistory extends javax.swing.JPanel {
             LocalDateTime eventStartTime = eventTimestamp.toLocalDateTime();
             LocalDateTime currentTime = LocalDateTime.now();
     
-            if (eventStartTime.isBefore(currentTime)){
+            if (eventStartTime.isAfter(currentTime)){
                 continue;
             }
             
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+            pnlEvent eventPanel = new pnlEvent(event);
 
             eventPanel.setPreferredSize(new Dimension(250, 250));
             pnlCards.add(eventPanel);

@@ -163,7 +163,7 @@ public class CheckoutView extends BaseView {
         
         for (x = 0; x < events.size(); x++) {
             Event event = events.get(x);
-            pnlEvent eventPanel = new pnlEvent(event.getName(), event.getLocation(), event.getDescription(), event.getFormattedStartTime(), event.getFormattedEndTime());
+            pnlEvent eventPanel = new pnlEvent(event);
             eventPanel.setPreferredSize(new Dimension(250, 250));
 
             pnlUpcomingCards.add(eventPanel);
