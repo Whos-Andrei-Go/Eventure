@@ -116,7 +116,7 @@ public class EnterPaymentMethodView extends BaseView {
         pnlFinalCheckoutDetails1 = new views.shared.components.pnlFinalCheckoutDetails();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Dashboard");
+        setTitle("Eventure - Enter Payment Method");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -130,7 +130,7 @@ public class EnterPaymentMethodView extends BaseView {
         pnlCart.setBackground(new java.awt.Color(155, 0, 155));
         pnlCart.setPreferredSize(new java.awt.Dimension(724, 434));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "GCash", "Maya", "Credit Card", " " }));
 
         javax.swing.GroupLayout pnlCartLayout = new javax.swing.GroupLayout(pnlCart);
         pnlCart.setLayout(pnlCartLayout);

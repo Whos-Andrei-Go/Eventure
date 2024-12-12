@@ -107,7 +107,7 @@ public class CheckoutView extends BaseView {
         pnlCheckoutDetails2 = new views.shared.components.pnlCheckoutDetails();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Dashboard");
+        setTitle("Eventure - Checkout");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));

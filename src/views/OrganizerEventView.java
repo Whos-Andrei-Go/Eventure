@@ -165,7 +165,7 @@ public class OrganizerEventView extends BaseView {
         lblTicketsSold = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Events");
+        setTitle("Eventure - Event");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));

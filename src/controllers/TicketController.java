@@ -27,35 +27,43 @@ public class TicketController {
     }
     
     public boolean addTicketsToDatabase(int ticketTypeId, int quantity, int userId) {
-        // Assuming you have a method to retrieve the TicketType
-        TicketType ticketType = getTicketTypeById(ticketTypeId);  // Get the ticket type from DB
+        TicketType ticketType = getTicketTypeById(ticketTypeId);
         if (ticketType == null) {
-            return false;  // Ticket type not found
+            return false;
         }
 
-        // Get the current date for the purchase
+        if (ticketType.getQuantity() < quantity) {
+            return false;  // Not enough tickets available
+        }
+
         java.sql.Date purchaseDate = new java.sql.Date(System.currentTimeMillis());
 
-        // Now insert N tickets into the database with the user_id and current purchase date
         try {
             String sql = "INSERT INTO tickets (user_id, ticket_type_id, purchase_date) VALUES (?, ?, ?)";
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
 
-            // Insert the tickets one by one
             for (int i = 0; i < quantity; i++) {
-                stmt.setInt(1, userId);  // Set the user_id
-                stmt.setInt(2, ticketTypeId);  // Set the ticket_type_id
-                stmt.setDate(3, purchaseDate);  // Set the current date as purchase date
-                stmt.addBatch();  // Add to batch
+                stmt.setInt(1, userId);
+                stmt.setInt(2, ticketTypeId);
+                stmt.setDate(3, purchaseDate);
+                stmt.addBatch();
             }
 
-            // Execute the batch insert
             int[] rowsAffected = stmt.executeBatch();
 
-            return rowsAffected.length == quantity;  // If all rows were inserted, return true
+            if (rowsAffected.length == quantity) {
+                String updateSql = "UPDATE TicketTypes SET quantity = quantity - ? WHERE id = ?";
+                PreparedStatement updateStmt = db.getConnection().prepareStatement(updateSql);
+                updateStmt.setInt(1, quantity);
+                updateStmt.setInt(2, ticketTypeId);
+                updateStmt.executeUpdate();
+                return true;
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;  // Return false if there's an error
+            return false;
         }
     }
 

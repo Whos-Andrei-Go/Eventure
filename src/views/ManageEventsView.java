@@ -49,13 +49,12 @@ public class ManageEventsView extends BaseView {
         scrlMain = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
         hdrMain = new javax.swing.JLabel();
-        btnCreateEvent = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEvents = new javax.swing.JTable();
         pnlNavBarAdmin1 = new views.shared.components.pnlNavBarAdmin();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Events");
+        setTitle("Eventure - Manage Events");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -64,21 +63,6 @@ public class ManageEventsView extends BaseView {
         hdrMain.setText("MANAGE EVENTS");
         hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-
-        btnCreateEvent.setBackground(new java.awt.Color(153, 0, 153));
-        btnCreateEvent.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        btnCreateEvent.setForeground(new java.awt.Color(255, 255, 255));
-        btnCreateEvent.setText("Create Event");
-        btnCreateEvent.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnCreateEventMouseClicked(evt);
-            }
-        });
-        btnCreateEvent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreateEventActionPerformed(evt);
-            }
-        });
 
         tblEvents.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -108,20 +92,14 @@ public class ManageEventsView extends BaseView {
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(hdrMain)
-                        .addGap(423, 423, 423)
-                        .addComponent(btnCreateEvent)))
+                        .addGap(608, 608, 608)))
                 .addContainerGap(309, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(btnCreateEvent)))
+                .addGap(20, 20, 20)
+                .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(806, Short.MAX_VALUE))
@@ -209,19 +187,6 @@ public class ManageEventsView extends BaseView {
         }
     }
     
-    private void btnCreateEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateEventActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCreateEventActionPerformed
-
-    private void btnCreateEventMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCreateEventMouseClicked
-        // TODO add your handling code here:
-        this.dispose();
-        CreateEventView createEventView = new CreateEventView();
-        // Optionally pass the database connection or user info if needed
-        //DashboardController dashboardController = new DashboardController(dashboardView, dbConnection);
-        createEventView.setVisible(true);
-    }//GEN-LAST:event_btnCreateEventMouseClicked
-
     private void tblEventsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEventsMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 1) {
@@ -376,7 +341,6 @@ public class ManageEventsView extends BaseView {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreateEvent;
     private javax.swing.JLabel hdrMain;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlMain;

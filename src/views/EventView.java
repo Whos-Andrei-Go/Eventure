@@ -104,7 +104,7 @@ public class EventView extends BaseView {
         lblQuantityLeft = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Events");
+        setTitle("Eventure - Event");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -368,6 +368,17 @@ public class EventView extends BaseView {
 
         if (quantity <= 0) {
             JOptionPane.showMessageDialog(this, "Please select a quantity greater than 0.");
+            return;  // Exit if quantity is not valid
+        }
+        
+        TicketType selectedTicketType = ticketController.getTicketTypeById(selectedTicketTypeId);
+        if (selectedTicketType.getQuantity() <= 0) {
+            JOptionPane.showMessageDialog(this, "Ticket type sold out. Please choose another");
+            return;  // Exit if quantity is not valid
+        }
+        
+        if (quantity> selectedTicketType.getQuantity()) {
+            JOptionPane.showMessageDialog(this, "Quantity greater than tickets available!");
             return;  // Exit if quantity is not valid
         }
 

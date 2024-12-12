@@ -132,7 +132,7 @@ public class AdminDashboardView extends BaseView {
         pnlNavBarAdmin1 = new views.shared.components.pnlNavBarAdmin();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Eventure - Dashboard");
+        setTitle("Eventure - Admin Dashboard");
         setResizable(false);
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));

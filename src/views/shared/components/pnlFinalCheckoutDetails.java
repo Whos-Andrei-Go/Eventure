@@ -6,10 +6,12 @@ package views.shared.components;
 
 import controllers.TicketController;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.math.BigDecimal;
 import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import models.Cart;
 import models.TicketType;
 import utility.Database;
@@ -133,15 +135,19 @@ public class pnlFinalCheckoutDetails extends javax.swing.JPanel {
                     BigDecimal totalPrice = ticketType.getPrice().multiply(BigDecimal.valueOf(totalQuantity));
                     cartTotal = cartTotal.add(totalPrice);
 
+                    Window parentWindow;
+                    parentWindow = SwingUtilities.getWindowAncestor(this);
+
                     // Insert the tickets into the database (assuming addTicketsToDatabase() method is available in TicketController)
                     boolean inserted = ticketController.addTicketsToDatabase(ticketTypeId, totalQuantity, Session.getCurrentUser().getId());  // Assume userId is available
 
                     // Check if the tickets were inserted successfully
                     if (!inserted) {
-                        JOptionPane.showMessageDialog(this, "Failed to add tickets to the database for ticket type: " + ticketType.getName());
+                        JOptionPane.showMessageDialog(parentWindow, "Failed to add tickets to the database for ticket type: " + ticketType.getName());
                     }
                     else{
-                        JOptionPane.showMessageDialog(this, "Tickets successfully purchased!");
+                        JOptionPane.showMessageDialog(parentWindow, "Tickets successfully purchased!");
+                        Cart.getInstance().clearCart();
                     }
 
 

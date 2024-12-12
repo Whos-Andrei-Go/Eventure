@@ -9,6 +9,7 @@ import java.beans.Statement;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import utility.Database;
+import utility.Session;
 
 /**
  *
@@ -37,10 +38,12 @@ public class pnlMyTickets extends javax.swing.JPanel {
                 + "t.status "
                 + "FROM Tickets t "
                 + "JOIN TicketTypes tt ON t.ticket_type_id = tt.id "
-                + "JOIN Events e ON tt.event_id = e.id";
+                + "JOIN Events e ON tt.event_id = e.id "
+                + "WHERE t.user_id = ?"; // assuming user_id is the column that stores the user ID in the Tickets table
 
         try(PreparedStatement stmt = db.getConnection().prepareStatement(query)) {
             // Assuming you have a method to get a database connection
+            stmt.setInt(1, Session.getCurrentUser().getId());  // Set the eventId parameter in the query
             ResultSet rs = stmt.executeQuery();
 
             // Create a vector to hold the column names (headers)
