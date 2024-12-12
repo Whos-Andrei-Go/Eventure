@@ -79,6 +79,9 @@ public class OrganizerEventView extends BaseView {
             );
             ticketListModel.addElement(formattedEntry);
         }
+        
+        lblTicketsSold.setText("Tickets Sold: " + ticketController.getEventTicketsSold(daEvent.getId()));
+        lblRevenue.setText("Revenue: " + eventController.getEventRevenue(daEvent.getId()));
     }
     
     private void initDatetimePickers(Event daEvent){
@@ -132,10 +135,10 @@ public class OrganizerEventView extends BaseView {
         pnlNavBar1 = new views.shared.components.pnlNavBar();
         scrlMain = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
-        hdrMain = new javax.swing.JLabel();
+        hdrAnalytics = new javax.swing.JLabel();
         txtEventName = new javax.swing.JTextField();
         lblStartDate = new javax.swing.JLabel();
-        lblEventName1 = new javax.swing.JLabel();
+        lblRevenue = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JTextArea();
         btnSaveChanges = new javax.swing.JButton();
@@ -156,6 +159,10 @@ public class OrganizerEventView extends BaseView {
         lblEventLocation = new javax.swing.JLabel();
         txtEventLocation = new javax.swing.JTextField();
         lblDeleteEvent = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        hdrMain = new javax.swing.JLabel();
+        lblEventName3 = new javax.swing.JLabel();
+        lblTicketsSold = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Eventure - Events");
@@ -163,10 +170,10 @@ public class OrganizerEventView extends BaseView {
 
         pnlMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
-        hdrMain.setText("EVENT NAME");
-        hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        hdrAnalytics.setFont(new java.awt.Font("Riffic Free Medium", 0, 48)); // NOI18N
+        hdrAnalytics.setText("ANALYTICS");
+        hdrAnalytics.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        hdrAnalytics.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
         txtEventName.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtEventName.setPreferredSize(new java.awt.Dimension(225, 30));
@@ -180,9 +187,9 @@ public class OrganizerEventView extends BaseView {
         lblStartDate.setText("Event Start Date:");
         lblStartDate.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 20, 20));
 
-        lblEventName1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        lblEventName1.setText("Event Description:");
-        lblEventName1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        lblRevenue.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblRevenue.setText("Revenue:");
+        lblRevenue.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
         txtDescription.setColumns(20);
         txtDescription.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -302,16 +309,28 @@ public class OrganizerEventView extends BaseView {
             }
         });
 
+        hdrMain.setFont(new java.awt.Font("Riffic Free Medium", 0, 64)); // NOI18N
+        hdrMain.setText("EVENT NAME");
+        hdrMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        hdrMain.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        lblEventName3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblEventName3.setText("Event Description:");
+        lblEventName3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
+        lblTicketsSold.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblTicketsSold.setText("Tickets Sold:");
+        lblTicketsSold.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+            .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(hdrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblEndTime)
                             .addComponent(frmTxtEndTime, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -325,7 +344,7 @@ public class OrganizerEventView extends BaseView {
                         .addGap(19, 19, 19))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblEventName1)
+                            .addComponent(lblRevenue)
                             .addComponent(lblEventLocation)
                             .addComponent(lblEventName2)
                             .addGroup(pnlMainLayout.createSequentialGroup()
@@ -349,19 +368,34 @@ public class OrganizerEventView extends BaseView {
                                     .addComponent(frmTxtStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(frmTxtEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 324, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jSeparator2)
+                        .addContainerGap())
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(hdrAnalytics, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(lblTicketsSold)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(hdrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(279, 279, 279)))
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGap(16, 16, 16)
+                    .addComponent(lblEventName3)
+                    .addContainerGap(991, Short.MAX_VALUE)))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(28, 28, 28)
+                .addGap(31, 31, 31)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -390,22 +424,38 @@ public class OrganizerEventView extends BaseView {
                             .addGroup(pnlMainLayout.createSequentialGroup()
                                 .addComponent(lblDeleteEvent)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(12, Short.MAX_VALUE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblEventName2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtEventName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblEventLocation)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtEventLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblEventName1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jSeparator1)))
+                                .addComponent(btnSaveChanges, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlMainLayout.createSequentialGroup()
+                            .addComponent(lblEventName2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtEventName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(lblEventLocation)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtEventLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(83, 83, 83)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(41, 41, 41)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(hdrAnalytics, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(lblTicketsSold)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblRevenue)
+                .addGap(21, 21, 21))
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGap(30, 30, 30)
+                    .addComponent(hdrMain, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(761, Short.MAX_VALUE)))
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGap(353, 353, 353)
+                    .addComponent(lblEventName3)
+                    .addContainerGap(448, Short.MAX_VALUE)))
         );
 
         scrlMain.setViewportView(pnlMain);
@@ -668,19 +718,23 @@ public class OrganizerEventView extends BaseView {
     private javax.swing.JFormattedTextField frmTxtEndTime;
     private javax.swing.JFormattedTextField frmTxtStartDate;
     private javax.swing.JFormattedTextField frmTxtStartTime;
+    private javax.swing.JLabel hdrAnalytics;
     private javax.swing.JLabel hdrMain;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lblDeleteEvent;
     private javax.swing.JLabel lblEndDate;
     private javax.swing.JLabel lblEndDate1;
     private javax.swing.JLabel lblEndTime;
     private javax.swing.JLabel lblEventLocation;
-    private javax.swing.JLabel lblEventName1;
     private javax.swing.JLabel lblEventName2;
+    private javax.swing.JLabel lblEventName3;
+    private javax.swing.JLabel lblRevenue;
     private javax.swing.JLabel lblStartDate;
     private javax.swing.JLabel lblStartTime;
+    private javax.swing.JLabel lblTicketsSold;
     private javax.swing.JList<String> listTicketType;
     private javax.swing.JPanel pnlMain;
     private views.shared.components.pnlNavBar pnlNavBar1;

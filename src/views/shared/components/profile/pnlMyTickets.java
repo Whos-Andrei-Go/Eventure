@@ -59,7 +59,8 @@ public class pnlMyTickets extends javax.swing.JPanel {
                 Vector<Object> row = new Vector<>();
                 row.add(rs.getInt("ticket_id"));  // Ticket ID
                 row.add(rs.getString("ticket_type_name"));  // Ticket Type Name
-                row.add(rs.getBigDecimal("ticket_price"));  // Ticket Price
+     
+           row.add(rs.getBigDecimal("ticket_price"));  // Ticket Price
                 row.add(rs.getString("event_name"));  // Event Name
                 row.add(rs.getString("status"));  // Ticket Status
                 data.add(row);

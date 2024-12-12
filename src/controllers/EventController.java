@@ -9,6 +9,7 @@ package controllers;
  * @author andre
  */
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,59 @@ public class EventController {
         return event;  // Return the event or null if not found
     }
 
+    public Event getEventById(int eventId) {
+        Event event = null;
+
+        // SQL query to fetch the event by ID
+        String sql = "SELECT * FROM events WHERE id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, eventId);  // Set the eventId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Check if the result set contains data
+            if (rs.next()) {
+                // Create an Event object and populate it from the result set
+                int id = rs.getInt("id");
+                int creatorId = rs.getInt("creator_id");
+                String name = rs.getString("name");
+                String location = rs.getString("location");
+                String description = rs.getString("description");
+                Timestamp startTime = rs.getTimestamp("start_time");
+                Timestamp endTime = rs.getTimestamp("end_time");
+
+                event = new Event(id, creatorId, name, location, description, startTime, endTime);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return event;  // Return the event or null if not found
+    }
+    
+    public BigDecimal getEventRevenue(int eventId) {
+        BigDecimal revenue = BigDecimal.ZERO;
+
+        // SQL query to fetch tickets for the specified event_id
+        String sql = "SELECT t.id, tt.price FROM tickets t "
+                + "JOIN ticketTypes tt ON t.ticket_type_id = tt.id "
+                + "WHERE tt.event_id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, eventId);  // Set the eventId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the result set
+            while (rs.next()) {
+                // Add the ticket type's price to the revenue
+                revenue = revenue.add(rs.getBigDecimal("price"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return revenue;  // Return the event revenue
+    }
     
     public Event createEvent(Event event) {
         String query = "INSERT INTO events (creator_id, name, location, description, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";

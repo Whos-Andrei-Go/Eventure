@@ -276,10 +276,21 @@ public class LoginView extends BaseView {
         this.dispose();
 
         // Open the dashboard view
-        DashboardView dashboardView = new DashboardView();
+        String userRole = Session.getCurrentUser().getRole();
+        
+        switch(userRole){
+            case "Admin":
+                AdminDashboardView adminDashboardView = new AdminDashboardView();
+                adminDashboardView.setVisible(true);
+                break;
+            default:
+                DashboardView dashboardView = new DashboardView();
+                dashboardView.setVisible(true);
+        }
+        
         // Optionally pass the database connection or user info if needed
         //DashboardController dashboardController = new DashboardController(dashboardView, dbConnection);
-        dashboardView.setVisible(true);
+        
     }
     
     private void openRegisterView() {

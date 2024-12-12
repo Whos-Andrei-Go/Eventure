@@ -59,6 +59,34 @@ public class TicketController {
         }
     }
 
+    public List<Ticket> getTickets() {
+        List<Ticket> tickets = new ArrayList<>();
+
+        // SQL query to fetch tickets for the specified user_id
+        String sql = "SELECT * FROM tickets";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the result set
+            while (rs.next()) {
+                // Create a Ticket object and populate it from the result set
+                Ticket ticket = new Ticket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setUserId(rs.getInt("user_id"));
+                ticket.setTicketTypeId(rs.getInt("ticket_type_id"));
+                ticket.setPurchaseDate(rs.getTimestamp("purchase_date"));
+
+                // Add the ticket to the list
+                tickets.add(ticket);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return tickets;  // Return the list of tickets
+    }
+    
     public List<Ticket> getTicketsByUserId(int userId) {
         List<Ticket> tickets = new ArrayList<>();
 
@@ -86,6 +114,61 @@ public class TicketController {
         }
 
         return tickets;  // Return the list of tickets
+    }
+    
+    public List<Ticket> getTicketsByEventId(int eventId) {
+        List<Ticket> tickets = new ArrayList<>();
+
+        // SQL query to fetch tickets for the specified event_id
+        String sql = "SELECT t.* FROM tickets t "
+                + "JOIN ticketTypes tt ON t.ticket_type_id = tt.id "
+                + "WHERE tt.event_id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, eventId);  // Set the eventId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the result set
+            while (rs.next()) {
+                // Create a Ticket object and populate it from the result set
+                Ticket ticket = new Ticket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setUserId(rs.getInt("user_id"));
+                ticket.setTicketTypeId(rs.getInt("ticket_type_id"));
+                ticket.setPurchaseDate(rs.getTimestamp("purchase_date"));
+
+                // Add the ticket to the list
+                tickets.add(ticket);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return tickets;  // Return the list of tickets
+    }
+    
+    public int getEventTicketsSold(int eventId) {
+        int ticketsSold = 0;
+
+        // SQL query to fetch tickets for the specified event_id
+        String sql = "SELECT COUNT(t.id) FROM tickets t "
+                + "JOIN ticketTypes tt ON t.ticket_type_id = tt.id "
+                + "WHERE tt.event_id = ?";
+
+        try (PreparedStatement stmt = db.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, eventId);  // Set the eventId parameter in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Process the result set
+            if (rs.next()) {
+                // Get the count of tickets sold
+                ticketsSold = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // Handle any SQL exceptions
+        }
+
+        return ticketsSold;  // Return the number of tickets sold
     }
 
     
