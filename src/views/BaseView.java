@@ -33,12 +33,14 @@ public class BaseView extends javax.swing.JFrame {
     protected UserController userController;
     protected TicketController ticketController;
     protected CartController cartController;
+    protected PaymentMethodController paymentMethodController;
     
     public void initControllers(){
        eventController = new EventController(db);
        userController = new UserController(db);
        ticketController = new TicketController(db);
        cartController = new CartController(db);
+       paymentMethodController = new PaymentMethodController(db);
     }
     
     public void refreshData(){

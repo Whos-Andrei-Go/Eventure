@@ -16,6 +16,7 @@ import models.Cart;
 import models.TicketType;
 import utility.Database;
 import utility.Session;
+import views.CheckoutView;
 
 /**
  *
@@ -148,10 +149,11 @@ public class pnlFinalCheckoutDetails extends javax.swing.JPanel {
                     else{
                         JOptionPane.showMessageDialog(parentWindow, "Tickets successfully purchased!");
                         Cart.getInstance().clearCart();
+                        
+                        parentWindow.dispose(); // Close the login view
+                        CheckoutView checkoutView = new CheckoutView();
+                        checkoutView.setVisible(true);
                     }
-
-
-                 
                 }
             }
         }
